@@ -1,0 +1,13 @@
+* {
+    font-family: sans-serif;
+}
+body {
+    background: #ffeeee;
+    padding: 20px;
+    margin: 0;
+}
+
+h2  {
+    padding: 20px 0 ;
+    color: darkslateblue;
+}
