@@ -2,9 +2,9 @@ import React from "react";
 import reactDom from "react-dom";
 import { HtmlInIframe } from "../src";
 // @ts-ignore
-import html from "./unsafeHtml.html";
-
-const myUnsafeHtml = html;
+import myUnsafeHtml from "./unsafeHtml.html";
+// @ts-ignore
+import externalHtml from "./externalHtml.html";
 
 const customcss = `
     body {
@@ -17,7 +17,7 @@ reactDom.render(
     <h2>here's a normal iframe</h2>
     <iframe src={"data:text/html," + myUnsafeHtml} />
     <h2>here's our fancy iframe</h2>
-    <HtmlInIframe unsafeHtml={myUnsafeHtml} customStyle={customcss as any} />
+    <HtmlInIframe unsafeHtml={externalHtml} customStyle={customcss as any} />
   </div>,
   document.getElementById("app")
 );

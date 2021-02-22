@@ -74,6 +74,7 @@ const HtmlInIframe = (props: HtmlInIframeProps) => {
   return (
     <iframe
       style={{ border: "none", width: "100%" }}
+      sandbox="allow-scripts"
       src={src}
       height={height}
     />
