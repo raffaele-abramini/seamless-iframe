@@ -1,14 +1,11 @@
 import React from "react";
 import reactDom from "react-dom";
 import { HtmlInIframe } from "../src";
-// @ts-ignore
-import externalHtml from "./externalHtml.html";
-// @ts-ignore
-import longHtml from "./longHtml.html";
-// @ts-ignore
-import unsafeHtml from "./unsafeHtml.html";
-// @ts-ignore
-import unsafeHtml2 from "./unsafeHtml2.html";
+import externalHtml from "./examples/externalHtml.html";
+import longHtml from "./examples/longHtml.html";
+import unsafeHtml from "./examples/unsafehtml.html";
+import unsafeHtml2 from "./examples/unsafehtml2.html";
+import htmlWithWeirdChars from "./examples/htmlWithWeirdChars.html";
 
 const customCss = `
   body {
@@ -21,6 +18,7 @@ const visibleSections = {
   b: true,
   c: true,
   d: true,
+  e: true,
 };
 
 const visibleContent = {
@@ -127,6 +125,29 @@ if (!isStolen) {
                 <h3>Seamless iframe</h3>
                 <HtmlInIframe
                   unsafeHtml={unsafeHtml2}
+                  customStyle={customCss}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {visibleSections.e && (
+        <section>
+          <h2>Works with weird quotes and chars</h2>
+          <div className="two-cols">
+            {visibleContent.original && (
+              <div>
+                <h3>Default iframe</h3>
+                <iframe src={"data:text/html," + htmlWithWeirdChars} />
+              </div>
+            )}
+            {visibleContent.seamless && (
+              <div>
+                <h3>Seamless iframe</h3>
+                <HtmlInIframe
+                  unsafeHtml={htmlWithWeirdChars}
                   customStyle={customCss}
                 />
               </div>
