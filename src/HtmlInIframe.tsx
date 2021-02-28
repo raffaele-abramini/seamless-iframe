@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 export interface HtmlInIframeProps {
   customStyle?: string;
-  unsafeHtml: string;
+  sanitizedHtml: string;
   heightCorrection?: boolean;
   heightCorrectionOnResize?: boolean;
   debounceResize?: boolean;
@@ -58,7 +58,7 @@ const HtmlInIframe = (props: HtmlInIframeProps) => {
   const styleTag = `<style>${props.customStyle || ""}</style>`;
   const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
 
-  const src = `data:text/html,${styleTag}${props.unsafeHtml}${heightListener}`;
+  const src = `data:text/html,${styleTag}${props.sanitizedHtml}${heightListener}`;
 
   useEffect(() => {
     window.addEventListener("message", (e) => {

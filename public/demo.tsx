@@ -6,6 +6,7 @@ import longHtml from "./examples/longHtml.html";
 import unsafeHtml from "./examples/unsafehtml.html";
 import unsafeHtml2 from "./examples/unsafehtml2.html";
 import htmlWithWeirdChars from "./examples/htmlWithWeirdChars.html";
+import extremelyLongHtml from "./examples/extremelyLongHtml.html";
 
 const customCss = `
   body {
@@ -19,6 +20,7 @@ const visibleSections = {
   c: true,
   d: true,
   e: true,
+  f: true,
 };
 
 const visibleContent = {
@@ -54,8 +56,10 @@ if (!isStolen) {
             </div>
             <div>
               <h3>Seamless iframe</h3>
-              <HtmlInIframe unsafeHtml={externalHtml} customStyle={customCss} />
-
+              <HtmlInIframe
+                sanitizedHtml={externalHtml}
+                customStyle={customCss}
+              />
               <h4>Provided styles</h4>
               <pre>{customCss.trim()}</pre>
             </div>
@@ -74,7 +78,7 @@ if (!isStolen) {
             <div>
               <h3>Seamless iframe</h3>
               <HtmlInIframe
-                unsafeHtml={longHtml}
+                sanitizedHtml={longHtml}
                 customStyle={customCss}
                 debounceResize
                 heightCorrection
@@ -97,7 +101,10 @@ if (!isStolen) {
             {visibleContent.seamless && (
               <div>
                 <h3>Seamless iframe</h3>
-                <HtmlInIframe unsafeHtml={unsafeHtml} customStyle={customCss} />
+                <HtmlInIframe
+                  sanitizedHtml={unsafeHtml}
+                  customStyle={customCss}
+                />
               </div>
             )}
           </div>
@@ -124,7 +131,7 @@ if (!isStolen) {
               <div>
                 <h3>Seamless iframe</h3>
                 <HtmlInIframe
-                  unsafeHtml={unsafeHtml2}
+                  sanitizedHtml={unsafeHtml2}
                   customStyle={customCss}
                 />
               </div>
@@ -147,7 +154,29 @@ if (!isStolen) {
               <div>
                 <h3>Seamless iframe</h3>
                 <HtmlInIframe
-                  unsafeHtml={htmlWithWeirdChars}
+                  sanitizedHtml={htmlWithWeirdChars}
+                  customStyle={customCss}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+      {visibleSections.f && (
+        <section>
+          <h2>Extremely long html (1.6Mb)</h2>
+          <div className="two-cols">
+            {visibleContent.original && (
+              <div>
+                <h3>Default iframe</h3>
+                <iframe src={"data:text/html," + extremelyLongHtml} />
+              </div>
+            )}
+            {visibleContent.seamless && (
+              <div>
+                <h3>Seamless iframe</h3>
+                <HtmlInIframe
+                  sanitizedHtml={extremelyLongHtml}
                   customStyle={customCss}
                 />
               </div>
