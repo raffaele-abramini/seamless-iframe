@@ -12,6 +12,10 @@ h2 {
   color: darkslateblue;
 }
 
+section {
+  margin-bottom: 4em;
+}
+
 .two-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;

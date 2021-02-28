@@ -10,7 +10,7 @@ import {SeamlessIframe} from "seamless-iframe";
 const myHtml = "<div>hello</div>";
 
 export const MyPage = (props) => {
-    return <div>
+    return ( 
         <SeamlessIframe
             sanitizedHtml={myHtml}
             customStyle={`
@@ -20,20 +20,20 @@ export const MyPage = (props) => {
                 }
             `}
         />
-    </div>
+    );
 }
 ````
 
 ### Props
 
-| Property | Type | Description | Required | Default |
-| --- | --- | --- | --- | --- |
-| `sanitizedHtml` | String | HTMl string of text to be rendered in the iframe | yes | n/a |
-| `inheritParentStyle`| Boolean | Whether to inherit styles on the parent page or not | no | true 
-| `customStyle` | String | Extra set of css rules for the inner content | no | "" |
-| `heightCorrection` | Boolean | Whether to apply the iframe content scroll height to the iframe element or not | no | true |  
-| `heightCorrectionOnResize` | Boolean | Whether to re apply the height on resize. Off is `heightCorrection` is false | no | true | 
-| `debounceResizeTime` | Number | Debounce time for reapplying height on the window resize event. If set to 0, no debounce function will be applied | no | 250 |
+| Property | Type | Description  | Default |
+| --- | --- | --- | --- |
+| `sanitizedHtml` | String | *Required* - HTML string of text to be rendered in the iframe. We suggest to sanitize the HTML before passing to the iframe. | n/a |
+| `inheritParentStyle`| Boolean | Whether to inherit styles on the parent page or not | true 
+| `customStyle` | String | Extra set of css rules for the inner content | "" |
+| `heightCorrection` | Boolean | Whether to apply the iframe content scroll height to the iframe element or not | true |  
+| `heightCorrectionOnResize` | Boolean | Whether to re apply the height on resize. Off is `heightCorrection` is false | true | 
+| `debounceResizeTime` | Number | Debounce time for reapplying height on the window resize event. If set to 0, no debounce function will be applied | 250 |
 
 
 ## Use cases
@@ -56,4 +56,5 @@ Iframes:
 1. don't inherit styles from the parent window
 1. don't provide an easy way to set their full height
 
-Here's where the librar
+Here's where SeamlessIframe comes in handy. The generated iframes will automatically set their height depending on the content,
+and they will inherit the parent window styles.

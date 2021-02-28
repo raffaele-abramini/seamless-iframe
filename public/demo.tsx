@@ -25,6 +25,7 @@ const customCss2 = `
 const visibleSections = {
   a: true,
   a1: true,
+  a2: true,
   b: true,
   c: true,
   d: true,
@@ -83,6 +84,27 @@ if (!isStolen) {
               <SeamlessIframe
                 sanitizedHtml={externalHtml}
                 customStyle={customCss2}
+              />
+              <h4>Provided styles</h4>
+              <pre>{customCss2}</pre>
+            </div>
+          </div>
+        </section>
+      )}
+      {visibleSections.a2 && (
+        <section>
+          <h2>Ignores parent style, just get custom style</h2>
+          <div className="two-cols">
+            <div>
+              <h3>Default iframe</h3>
+              <iframe src={"data:text/html," + externalHtml} />
+            </div>
+            <div>
+              <h3>Seamless iframe</h3>
+              <SeamlessIframe
+                sanitizedHtml={externalHtml}
+                customStyle={customCss2}
+                inheritParentStyle={false}
               />
               <h4>Provided styles</h4>
               <pre>{customCss2}</pre>
