@@ -1,26 +1,30 @@
 import React from "react";
 import reactDom from "react-dom";
-import { SeamlessIframe } from "../src";
+import { SeamlessIframe } from "../src/SeamlessIframe";
 import externalHtml from "./examples/externalHtml.html";
 import longHtml from "./examples/longHtml.html";
 import unsafeHtml from "./examples/unsafehtml.html";
 import unsafeHtml2 from "./examples/unsafehtml2.html";
 import htmlWithWeirdChars from "./examples/htmlWithWeirdChars.html";
 import extremelyLongHtml from "./examples/extremelyLongHtml.html";
+import { getStylesheetElements } from "../src/getStylesheetElements";
 
 const customCss = `
   body {
     font-family: sans-serif;
     margin: 0;
+    padding: 0;
   }
 `;
+
 const visibleSections = {
   a: true,
+  a1: true,
   b: true,
   c: true,
   d: true,
   e: true,
-  f: true,
+  f: false,
 };
 
 const visibleContent = {
@@ -48,7 +52,7 @@ if (!isStolen) {
     <main>
       {visibleSections.a && (
         <section>
-          <h2>Receive styles to match parent style</h2>
+          <h2>Automatically gets styles from parent window</h2>
           <div className="two-cols">
             <div>
               <h3>Default iframe</h3>
@@ -61,7 +65,28 @@ if (!isStolen) {
                 customStyle={customCss}
               />
               <h4>Provided styles</h4>
-              <pre>{customCss.trim()}</pre>
+              <pre>{getStylesheetElements()}</pre>
+            </div>
+          </div>
+        </section>
+      )}
+      {visibleSections.a1 && (
+        <section>
+          <h2>Receives custom styles</h2>
+          <div className="two-cols">
+            <div>
+              <h3>Default iframe</h3>
+              <iframe src={"data:text/html," + externalHtml} />
+            </div>
+            <div>
+              <h3>Seamless iframe</h3>
+              <SeamlessIframe
+                sanitizedHtml={externalHtml}
+                customStyle={customCss}
+              />
+              <h4>Provided styles</h4>
+              <pre>{customCss}</pre>
+              <pre>{getStylesheetElements()}</pre>
             </div>
           </div>
         </section>

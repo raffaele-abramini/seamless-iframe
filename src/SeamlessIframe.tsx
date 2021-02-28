@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { getStylesheetElements } from "./getStylesheetElements";
 
 export interface HtmlInIframeProps {
-  customStyle?: string;
   sanitizedHtml: string;
+  customStyle?: string;
   heightCorrection?: boolean;
   heightCorrectionOnResize?: boolean;
   debounceResize?: boolean;
+  inheritParentStyle?: boolean;
 }
 
 const renderResizeScript = (id: number, props: HtmlInIframeProps) => {
@@ -54,7 +56,9 @@ const renderResizeScript = (id: number, props: HtmlInIframeProps) => {
 const SeamlessIframe = (props: HtmlInIframeProps) => {
   const [height, setHeight] = useState(100);
   const [id] = useState(Math.random());
-
+  const parentStyleTags = props.inheritParentStyle
+    ? getStylesheetElements()
+    : "";
   const styleTag = `<style>${props.customStyle || ""}</style>`;
   const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
 
@@ -80,7 +84,7 @@ const SeamlessIframe = (props: HtmlInIframeProps) => {
       style={{ border: "none", width: "100%" }}
       sandbox="allow-scripts"
       src={src}
-      srcDoc={`${styleTag}${props.sanitizedHtml}${heightListener}`}
+      srcDoc={`${parentStyleTags}${styleTag}${props.sanitizedHtml}${heightListener}`}
       height={height}
     />
   );
@@ -90,6 +94,7 @@ SeamlessIframe.defaultProps = {
   heightCorrection: true,
   heightCorrectionOnResize: true,
   debounceResize: true,
+  inheritParentStyle: true,
 };
 
 export { SeamlessIframe };
