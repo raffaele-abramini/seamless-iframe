@@ -1,5 +1,5 @@
 {
-  "name": "html-in-iframe",
+  "name": "seamless-iframe",
   "version": "0.0.1",
   "description": "A helper to safely render html in iframe",
   "main": "index.js",
@@ -17,6 +17,10 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "dependencies": {
+    "react": "17.0.1",
     "react-dom": "^17.0.1"
   }
 }

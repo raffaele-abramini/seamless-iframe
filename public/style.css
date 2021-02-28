@@ -1,13 +1,24 @@
 * {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 body {
-    background: #ffeeee;
-    padding: 20px;
-    margin: 0;
+  background: #ffeeee;
+  padding: 20px;
+  margin: 0;
 }
 
-h2  {
-    padding: 20px 0 ;
-    color: darkslateblue;
+h2 {
+  padding: 20px 0;
+  color: darkslateblue;
+}
+
+.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1em;
+}
+
+.two-cols > div {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 1em 2em;
 }

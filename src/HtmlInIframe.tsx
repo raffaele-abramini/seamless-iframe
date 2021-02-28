@@ -3,16 +3,19 @@ import React, { useEffect, useState } from "react";
 export interface HtmlInIframeProps {
   customStyle?: string;
   unsafeHtml: string;
-  heightCorrection: boolean;
-  heightCorrectionOnResize: boolean;
-  debounceResize: boolean;
+  heightCorrection?: boolean;
+  heightCorrectionOnResize?: boolean;
+  debounceResize?: boolean;
 }
 
-const renderResizeScript = (props: HtmlInIframeProps) => {
+const renderResizeScript = (id: number, props: HtmlInIframeProps) => {
   if (!props.heightCorrection) {
     return "";
   }
-  let output = `parent.postMessage(document.documentElement.scrollHeight, "${location.href}");`;
+  let output = `
+  const validatedMessage = () => JSON.stringify("${id}///"+document.documentElement.scrollHeight);
+  parent.postMessage(validatedMessage(), "${location.href}");
+  `;
   if (!props.heightCorrectionOnResize) {
     return output;
   }
@@ -34,13 +37,13 @@ const renderResizeScript = (props: HtmlInIframeProps) => {
             };
         };
         const handleResize = debounce(() => {
-            parent.postMessage(document.documentElement.scrollHeight, "${location.href}")
+            parent.postMessage(validatedMessage(), "${location.href}")
         }, 250);
 `;
   } else {
     output += `
         const handleResize = () => {
-            parent.postMessage(document.documentElement.scrollHeight, "${location.href}")
+            parent.postMessage(validatedMessage(), "${location.href}")
         };
     `;
   }
@@ -49,27 +52,28 @@ const renderResizeScript = (props: HtmlInIframeProps) => {
 };
 
 const HtmlInIframe = (props: HtmlInIframeProps) => {
+  const [height, setHeight] = useState(100);
+  const [id] = useState(Math.random());
+
   const styleTag = `<style>${props.customStyle || ""}</style>`;
-  const heightListener = `<script>${renderResizeScript(props)}</script>`;
+  const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
 
   const src = `data:text/html,${styleTag}${props.unsafeHtml}${heightListener}`;
-  const [height, setHeight] = useState(100);
 
   useEffect(() => {
-    window.addEventListener(
-      "message",
-      (e) => {
-        let height: number;
-        try {
-          height = Number(JSON.parse(e.data));
-        } catch (e) {
-          console.error("cannot parse iframe message");
-        }
+    window.addEventListener("message", (e) => {
+      let height: number;
+      let providedId: number;
+      try {
+        [providedId, height] = JSON.parse(e.data).split("///").map(Number);
+      } catch (e) {
+        console.error("cannot parse iframe message", e);
+      }
 
+      if (providedId === id) {
         setHeight(height);
-      },
-      false
-    );
+      }
+    });
   });
   return (
     <iframe
