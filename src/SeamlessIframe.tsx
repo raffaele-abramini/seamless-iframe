@@ -51,14 +51,14 @@ const renderResizeScript = (id: number, props: HtmlInIframeProps) => {
   return output + 'window.addEventListener("resize", handleResize);';
 };
 
-const HtmlInIframe = (props: HtmlInIframeProps) => {
+const SeamlessIframe = (props: HtmlInIframeProps) => {
   const [height, setHeight] = useState(100);
   const [id] = useState(Math.random());
 
   const styleTag = `<style>${props.customStyle || ""}</style>`;
   const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
 
-  const src = `data:text/html,${styleTag}${props.sanitizedHtml}${heightListener}`;
+  const src = `data:text/html`;
 
   useEffect(() => {
     window.addEventListener("message", (e) => {
@@ -80,15 +80,16 @@ const HtmlInIframe = (props: HtmlInIframeProps) => {
       style={{ border: "none", width: "100%" }}
       sandbox="allow-scripts"
       src={src}
+      srcDoc={`${styleTag}${props.sanitizedHtml}${heightListener}`}
       height={height}
     />
   );
 };
 
-HtmlInIframe.defaultProps = {
+SeamlessIframe.defaultProps = {
   heightCorrection: true,
   heightCorrectionOnResize: true,
   debounceResize: true,
 };
 
-export { HtmlInIframe };
+export { SeamlessIframe };

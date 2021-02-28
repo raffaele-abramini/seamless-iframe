@@ -1,1 +1,1 @@
-export { HtmlInIframe } from "./HtmlInIframe"
+export { SeamlessIframe } from "./SeamlessIframe";

@@ -1,6 +1,6 @@
 import React from "react";
 import reactDom from "react-dom";
-import { HtmlInIframe } from "../src";
+import { SeamlessIframe } from "../src";
 import externalHtml from "./examples/externalHtml.html";
 import longHtml from "./examples/longHtml.html";
 import unsafeHtml from "./examples/unsafehtml.html";
@@ -56,7 +56,7 @@ if (!isStolen) {
             </div>
             <div>
               <h3>Seamless iframe</h3>
-              <HtmlInIframe
+              <SeamlessIframe
                 sanitizedHtml={externalHtml}
                 customStyle={customCss}
               />
@@ -77,7 +77,7 @@ if (!isStolen) {
             </div>
             <div>
               <h3>Seamless iframe</h3>
-              <HtmlInIframe
+              <SeamlessIframe
                 sanitizedHtml={longHtml}
                 customStyle={customCss}
                 debounceResize
@@ -101,7 +101,7 @@ if (!isStolen) {
             {visibleContent.seamless && (
               <div>
                 <h3>Seamless iframe</h3>
-                <HtmlInIframe
+                <SeamlessIframe
                   sanitizedHtml={unsafeHtml}
                   customStyle={customCss}
                 />
@@ -130,7 +130,7 @@ if (!isStolen) {
             {visibleContent.seamless && (
               <div>
                 <h3>Seamless iframe</h3>
-                <HtmlInIframe
+                <SeamlessIframe
                   sanitizedHtml={unsafeHtml2}
                   customStyle={customCss}
                 />
@@ -153,7 +153,7 @@ if (!isStolen) {
             {visibleContent.seamless && (
               <div>
                 <h3>Seamless iframe</h3>
-                <HtmlInIframe
+                <SeamlessIframe
                   sanitizedHtml={htmlWithWeirdChars}
                   customStyle={customCss}
                 />
@@ -175,7 +175,7 @@ if (!isStolen) {
             {visibleContent.seamless && (
               <div>
                 <h3>Seamless iframe</h3>
-                <HtmlInIframe
+                <SeamlessIframe
                   sanitizedHtml={extremelyLongHtml}
                   customStyle={customCss}
                 />
