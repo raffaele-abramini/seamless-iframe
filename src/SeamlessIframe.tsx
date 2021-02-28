@@ -6,7 +6,7 @@ export interface HtmlInIframeProps {
   customStyle?: string;
   heightCorrection?: boolean;
   heightCorrectionOnResize?: boolean;
-  debounceResize?: boolean;
+  debounceResizeTime?: number;
   inheritParentStyle?: boolean;
 }
 
@@ -22,7 +22,7 @@ const renderResizeScript = (id: number, props: HtmlInIframeProps) => {
     return output;
   }
 
-  if (props.debounceResize) {
+  if (props.debounceResizeTime) {
     output += `
         function debounce(func, wait, immediate) {
             var timeout;
@@ -40,7 +40,7 @@ const renderResizeScript = (id: number, props: HtmlInIframeProps) => {
         };
         const handleResize = debounce(() => {
             parent.postMessage(validatedMessage(), "${location.href}")
-        }, 250);
+        }, ${props.debounceResizeTime});
 `;
   } else {
     output += `
@@ -65,7 +65,7 @@ const SeamlessIframe = (props: HtmlInIframeProps) => {
   const src = `data:text/html`;
 
   useEffect(() => {
-    window.addEventListener("message", (e) => {
+    const onMessageCallback = (e) => {
       let height: number;
       let providedId: number;
       try {
@@ -77,8 +77,13 @@ const SeamlessIframe = (props: HtmlInIframeProps) => {
       if (providedId === id) {
         setHeight(height);
       }
-    });
-  });
+    };
+
+    window.addEventListener("message", onMessageCallback);
+
+    return () => window.removeEventListener("message", onMessageCallback);
+  }, []);
+
   return (
     <iframe
       style={{ border: "none", width: "100%" }}
@@ -93,7 +98,7 @@ const SeamlessIframe = (props: HtmlInIframeProps) => {
 SeamlessIframe.defaultProps = {
   heightCorrection: true,
   heightCorrectionOnResize: true,
-  debounceResize: true,
+  debounceResizeTime: 250,
   inheritParentStyle: true,
 };
 

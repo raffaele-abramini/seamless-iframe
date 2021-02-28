@@ -24,6 +24,18 @@ export const MyPage = (props) => {
 }
 ````
 
+### Props
+
+| Property | Type | Description | Required | Default |
+| --- | --- | --- | --- | --- |
+| `sanitizedHtml` | String | HTMl string of text to be rendered in the iframe | yes | n/a |
+| `inheritParentStyle`| Boolean | Whether to inherit styles on the parent page or not | no | true 
+| `customStyle` | String | Extra set of css rules for the inner content | no | "" |
+| `heightCorrection` | Boolean | Whether to apply the iframe content scroll height to the iframe element or not | no | true |  
+| `heightCorrectionOnResize` | Boolean | Whether to re apply the height on resize. Off is `heightCorrection` is false | no | true | 
+| `debounceResizeTime` | Number | Debounce time for reapplying height on the window resize event. If set to 0, no debounce function will be applied | no | 250 |
+
+
 ## Use cases
 
 ### Why would I be using an iframe?

@@ -7,13 +7,18 @@ import unsafeHtml from "./examples/unsafehtml.html";
 import unsafeHtml2 from "./examples/unsafehtml2.html";
 import htmlWithWeirdChars from "./examples/htmlWithWeirdChars.html";
 import extremelyLongHtml from "./examples/extremelyLongHtml.html";
-import { getStylesheetElements } from "../src/getStylesheetElements";
 
 const customCss = `
   body {
-    font-family: sans-serif;
     margin: 0;
     padding: 0;
+  }
+`;
+const customCss2 = `
+  body {
+    margin: 0;
+    padding: 0;
+    color: slategray;
   }
 `;
 
@@ -60,12 +65,7 @@ if (!isStolen) {
             </div>
             <div>
               <h3>Seamless iframe</h3>
-              <SeamlessIframe
-                sanitizedHtml={externalHtml}
-                customStyle={customCss}
-              />
-              <h4>Provided styles</h4>
-              <pre>{getStylesheetElements()}</pre>
+              <SeamlessIframe sanitizedHtml={externalHtml} />
             </div>
           </div>
         </section>
@@ -82,11 +82,10 @@ if (!isStolen) {
               <h3>Seamless iframe</h3>
               <SeamlessIframe
                 sanitizedHtml={externalHtml}
-                customStyle={customCss}
+                customStyle={customCss2}
               />
               <h4>Provided styles</h4>
-              <pre>{customCss}</pre>
-              <pre>{getStylesheetElements()}</pre>
+              <pre>{customCss2}</pre>
             </div>
           </div>
         </section>
@@ -105,9 +104,6 @@ if (!isStolen) {
               <SeamlessIframe
                 sanitizedHtml={longHtml}
                 customStyle={customCss}
-                debounceResize
-                heightCorrection
-                heightCorrectionOnResize
               />
             </div>
           </div>
