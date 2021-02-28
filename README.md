@@ -4,7 +4,7 @@ Seamless Iframe is a little helper to render iframes as if they were part of you
 
 ## Usage
 
-````typescript jsx
+````jsx
 import {SeamlessIframe} from "seamless-iframe";
 
 const myHtml = "<div>hello</div>";
