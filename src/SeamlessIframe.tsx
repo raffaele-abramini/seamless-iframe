@@ -1,95 +1,74 @@
-import React, { useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import { getStylesheetElements } from "./getStylesheetElements";
+import { POST_MESSAGE_IDENTIFIER, renderResizeScript } from "./getResizeScript";
 
-export interface HtmlInIframeProps {
+export interface SeamlessIframeProps {
   sanitizedHtml: string;
   customStyle?: string;
+  customOuterStyleObject?: Record<string, CSSProperties>;
   heightCorrection?: boolean;
   heightCorrectionOnResize?: boolean;
   debounceResizeTime?: number;
   inheritParentStyle?: boolean;
 }
 
-const renderResizeScript = (id: number, props: HtmlInIframeProps) => {
-  if (!props.heightCorrection) {
-    return "";
-  }
-  let output = `
-  const validatedMessage = () => JSON.stringify("${id}///"+document.documentElement.scrollHeight);
-  parent.postMessage(validatedMessage(), "${location.href}");
-  `;
-  if (!props.heightCorrectionOnResize) {
-    return output;
-  }
-
-  if (props.debounceResizeTime) {
-    output += `
-        function debounce(func, wait, immediate) {
-            var timeout;
-            return function() {
-                var context = this, args = arguments;
-                var later = function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                var callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
-            };
-        };
-        const handleResize = debounce(() => {
-            parent.postMessage(validatedMessage(), "${location.href}")
-        }, ${props.debounceResizeTime});
-`;
-  } else {
-    output += `
-        const handleResize = () => {
-            parent.postMessage(validatedMessage(), "${location.href}")
-        };
-    `;
-  }
-
-  return output + 'window.addEventListener("resize", handleResize);';
-};
-
-const SeamlessIframe = (props: HtmlInIframeProps) => {
+const SeamlessIframe = (props: SeamlessIframeProps) => {
+  const {
+    inheritParentStyle,
+    customStyle,
+    customOuterStyleObject,
+    sanitizedHtml,
+  } = props;
   const [height, setHeight] = useState(100);
   const [id] = useState(Math.random());
-  const parentStyleTags = props.inheritParentStyle
-    ? getStylesheetElements()
-    : "";
-  const styleTag = `<style>${props.customStyle || ""}</style>`;
+  const parentStyleTags = inheritParentStyle ? getStylesheetElements() : "";
+  const styleTag = `<style>${customStyle || ""}</style>`;
   const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
 
-  const src = `data:text/html`;
-
   useEffect(() => {
-    const onMessageCallback = (e) => {
-      let height: number;
-      let providedId: number;
+    const onMessageCallback = (e: MessageEvent) => {
+      let messageId: string;
+      let height: string;
+      let providedId: string;
+
+      // If no data is provided, return
+      if (!e.data) {
+        return;
+      }
+
       try {
-        [providedId, height] = JSON.parse(e.data).split("///").map(Number);
+        [messageId, providedId, height] = JSON.parse(e.data).split("///");
       } catch (e) {
         console.error("cannot parse iframe message", e);
       }
 
-      if (providedId === id) {
-        setHeight(height);
+      // if this message has been triggered by anything else, ignore it
+      if (messageId !== POST_MESSAGE_IDENTIFIER) {
+        return;
       }
+
+      // if the iframe id doesn't match the one from this instance, ignore it
+      if (Number(providedId) !== id) {
+        return;
+      }
+
+      // all good, set it.
+      setHeight(Number(height));
     };
 
+    // Add listener on mount
     window.addEventListener("message", onMessageCallback);
 
+    // Remove listener on unmount
     return () => window.removeEventListener("message", onMessageCallback);
   }, []);
 
   return (
     <iframe
-      style={{ border: "none", width: "100%" }}
+      style={{ border: "none", width: "100%", ...customOuterStyleObject }}
       sandbox="allow-scripts"
-      src={src}
-      srcDoc={`${parentStyleTags}${styleTag}${props.sanitizedHtml}${heightListener}`}
+      src={"data:text/html"}
+      srcDoc={`${parentStyleTags}${styleTag}${sanitizedHtml}${heightListener}`}
       height={height}
     />
   );
@@ -100,6 +79,8 @@ SeamlessIframe.defaultProps = {
   heightCorrectionOnResize: true,
   debounceResizeTime: 250,
   inheritParentStyle: true,
-};
+  customStyle: "",
+  customOuterStyleObject: {},
+} as SeamlessIframeProps;
 
 export { SeamlessIframe };
