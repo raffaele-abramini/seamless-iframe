@@ -1,7 +1,7 @@
 # Todos
-- [ ] Add an identifier on 'postMessage' event
 - [ ] Publishing action + publish
 - [ ] Add github pages for examples
-- [ ] Split main SeamlessIframe
-- [ ] Comment SeamlessIframe
 - [ ] Add UTs
+- [x] Add an identifier on 'postMessage' event
+- [x] Comment SeamlessIframe
+- [x] Split main SeamlessIframe
