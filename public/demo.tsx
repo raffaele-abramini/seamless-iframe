@@ -24,12 +24,12 @@ const customCss2 = `
 `;
 
 const visibleSections = {
-  a: false,
-  a1: false,
-  a2: false,
-  b: false,
-  c: false,
-  d: false,
+  a: true,
+  a1: true,
+  a2: true,
+  b: true,
+  c: true,
+  d: true,
   e: true,
   f: false,
 };

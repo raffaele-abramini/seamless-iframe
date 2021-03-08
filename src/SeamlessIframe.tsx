@@ -38,9 +38,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
 
       try {
         [messageId, providedId, height] = JSON.parse(e.data).split("///");
-      } catch (e) {
-        console.error("cannot parse iframe message", e);
-      }
+      } catch (e) {}
 
       // if this message has been triggered by anything else, ignore it
       if (messageId !== POST_MESSAGE_IDENTIFIER) {
