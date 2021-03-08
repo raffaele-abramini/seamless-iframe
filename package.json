@@ -7,7 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx parcel public/index.html",
-    "validate": "jest && rimraf ./dist && tsc"
+    "start:demo": "npx parcel public/demo.html",
+    "publish": "yarn publish:examples && yarn publish:demo",
+    "publish:examples": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/",
+    "publish:demo": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/"
   },
   "author": "Raffaele Abramini",
   "license": "ISC",
@@ -35,7 +38,7 @@
     "react-dom": ">= 16"
   },
   "dependencies": {
-    "seamless-iframe": "^0.0.3-rc11"
+    "seamless-iframe": "^0.0.4-rc1"
   },
   "jest": {
     "rootDir": "src",

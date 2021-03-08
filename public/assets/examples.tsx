@@ -1,3 +1,4 @@
+/// <reference path="../html.d.ts" />
 import React from "react";
 import reactDom from "react-dom";
 import { SeamlessIframe } from "seamless-iframe";
@@ -58,6 +59,7 @@ function renderExamples() {
     <main>
       {visibleSections.a && (
         <section>
+          <span />
           <h2>Automatically gets styles from parent window</h2>
           <div className="two-cols">
             <div>
