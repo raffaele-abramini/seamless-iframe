@@ -9,7 +9,7 @@
     "start": "npx parcel public/index.html",
     "start:demo": "npx parcel public/demo.html",
     "build": "yarn build:examples && yarn build:demo",
-    "build:examples": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/",
+    "build:examples": "npx parcel build public/index.html --out-dir=docs --public-url ./assets/",
     "build:demo": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/"
   },
   "author": "Raffaele Abramini",
