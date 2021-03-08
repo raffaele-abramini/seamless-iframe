@@ -1,3 +1,4 @@
+/// <reference path="./html.d.ts" />
 import React from "react";
 import reactDom from "react-dom";
 import { SeamlessIframe } from "../src/SeamlessIframe";
