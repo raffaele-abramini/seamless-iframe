@@ -2,13 +2,14 @@
   "name": "seamless-iframe",
   "version": "0.0.3-rc9",
   "description": "A helper to safely render html in iframe",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx parcel public/index.html",
     "validate": "jest && rimraf ./dist && tsc"
   },
-  "author": "",
+  "author": "Raffaele Abramini",
   "license": "ISC",
   "devDependencies": {
     "@types/dompurify": "^2.2.1",
@@ -24,6 +25,11 @@
     "rimraf": "^3.0.2",
     "typescript": "^4.1.5"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raffaele-abramini/seamless-iframe.git"
+  },
+  "homepage": "https://github.com/raffaele-abramini/seamless-iframe#readme",
   "peerDependencies": {
     "react": ">= 16",
     "react-dom": ">= 16"
