@@ -8,9 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx parcel public/index.html",
     "start:demo": "npx parcel public/demo.html",
-    "publish": "yarn publish:examples && yarn publish:demo",
-    "publish:examples": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/",
-    "publish:demo": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/"
+    "build": "yarn build:examples && yarn build:demo",
+    "build:examples": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/",
+    "build:demo": "npx parcel build public/demo.html --out-dir=docs --public-url ./assets/"
   },
   "author": "Raffaele Abramini",
   "license": "ISC",
