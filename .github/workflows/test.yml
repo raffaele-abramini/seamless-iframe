@@ -29,6 +29,6 @@ jobs:
           cmd: jq --arg v ${GITHUB_REF##*/} '.version = $v' <<<"${{ steps.originalPackage.outputs.value }}";
 
       - name: Sync
-        run: echo $PWD
+        run: echo ${{ steps.jq.outputs.value }}
       - name: Sync 2
         run: ls
