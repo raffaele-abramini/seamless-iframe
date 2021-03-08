@@ -55,3 +55,7 @@ hr {
   border: 0 solid rgba(0, 0, 0, 0.3);
   border-top-width: 1px;
 }
+
+a {
+  color: blueviolet;
+}

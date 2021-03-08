@@ -65,7 +65,7 @@ const App = () => {
 
       <hr />
       <h2>Wanna see other examples?</h2>
-      <a href="/">Check it out here</a>
+      <a href="index.html">Check them out here</a>
     </div>
   );
 };
