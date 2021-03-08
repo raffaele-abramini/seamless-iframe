@@ -1,6 +1,6 @@
 {
   "name": "seamless-iframe",
-  "version": "0.0.3-rc12",
+  "version": "0.0.3",
   "description": "A helper to safely render html in iframe",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
