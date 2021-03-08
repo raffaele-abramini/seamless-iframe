@@ -19,7 +19,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     customOuterStyleObject,
     sanitizedHtml,
   } = props;
-  const [height, setHeight] = useState(100);
+  const [height, setHeight] = useState(0);
   const [id] = useState(Math.random());
   const parentStyleTags = inheritParentStyle ? getStylesheetElements() : "";
   const styleTag = `<style>${customStyle || ""}</style>`;
@@ -68,7 +68,9 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       style={{ border: "none", width: "100%", ...customOuterStyleObject }}
       sandbox="allow-scripts"
       src={"data:text/html"}
-      srcDoc={`${parentStyleTags}${styleTag}${sanitizedHtml}${heightListener}`}
+      srcDoc={`${parentStyleTags}${styleTag}${
+        sanitizedHtml || ""
+      }${heightListener}`}
       height={height}
     />
   );
