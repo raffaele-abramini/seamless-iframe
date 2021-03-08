@@ -1,6 +1,6 @@
 {
   "name": "seamless-iframe",
-  "version": "0.0.3-rc9",
+  "version": "0.0.3-rc10",
   "description": "A helper to safely render html in iframe",
   "main": "index.js",
   "scripts": {
