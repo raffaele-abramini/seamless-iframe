@@ -24,7 +24,5 @@ jobs:
       - name: Sync 2
         run: ls
       - name: Update package json
-        run: originalVersion=`cat ./package.json` \
-          content=`jq --arg v ${GITHUB_REF##*/} '.version = $v' <<<"$originalVersion"` \
-          echo $content \
-          $content > package.json
+        run: originalVersion=`cat ./package.json`; \
+          jq --arg v ${GITHUB_REF##*/} '.version = $v' <<<"$originalVersion";
