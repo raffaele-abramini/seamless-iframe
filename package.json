@@ -6,15 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx parcel public/index.html",
-    "validate": "jest && tsc"
+    "validate": "jest && rimraf ./dist && tsc"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/dompurify": "^2.2.1",
+    "@types/jest": "^26.0.20",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "dompurify": "^2.2.6",
+    "jest": "^26.6.3",
     "parcel": "^1.12.4",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
@@ -27,5 +29,9 @@
   "dependencies": {
     "react": "17.0.1",
     "react-dom": "^17.0.1"
+  },
+  "jest": {
+    "rootDir": "src",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$"
   }
 }

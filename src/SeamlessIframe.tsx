@@ -27,9 +27,9 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
 
   useEffect(() => {
     const onMessageCallback = (e: MessageEvent) => {
-      let messageId: string;
-      let height: string;
-      let providedId: string;
+      let messageId = "";
+      let height = "";
+      let providedId = "";
 
       // If no data is provided, return
       if (!e.data) {
