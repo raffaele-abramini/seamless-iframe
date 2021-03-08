@@ -5,7 +5,7 @@ import externalHtml from "./examples/externalHtml.html";
 import longHtml from "./examples/longHtml.html";
 import unsafeHtml from "./examples/unsafehtml.html";
 import unsafeHtml2 from "./examples/unsafehtml2.html";
-import htmlWithWeirdChars from "./examples/htmlWithWeirdChars.html";
+import htmlWithImage from "./examples/htmlWithImage.html";
 import extremelyLongHtml from "./examples/extremelyLongHtml.html";
 
 const customCss = `
@@ -13,22 +13,22 @@ const customCss = `
     margin: 0;
     padding: 0;
   }
+  img  { max-width:100%; }
 `;
 const customCss2 = `
   body {
     margin: 0;
     padding: 0;
     color: slategray;
-  }
 `;
 
 const visibleSections = {
-  a: true,
-  a1: true,
-  a2: true,
-  b: true,
-  c: true,
-  d: true,
+  a: false,
+  a1: false,
+  a2: false,
+  b: false,
+  c: false,
+  d: false,
   e: true,
   f: false,
 };
@@ -190,14 +190,14 @@ if (!isStolen) {
             {visibleContent.original && (
               <div>
                 <h3>Default iframe</h3>
-                <iframe src={"data:text/html," + htmlWithWeirdChars} />
+                <iframe src={"data:text/html," + htmlWithImage} />
               </div>
             )}
             {visibleContent.seamless && (
               <div>
                 <h3>Seamless iframe</h3>
                 <SeamlessIframe
-                  sanitizedHtml={htmlWithWeirdChars}
+                  sanitizedHtml={htmlWithImage}
                   customStyle={customCss}
                 />
               </div>

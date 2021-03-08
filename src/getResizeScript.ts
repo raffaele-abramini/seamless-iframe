@@ -8,7 +8,7 @@ export const renderResizeScript = (id: number, props: SeamlessIframeProps) => {
   }
   let output = `
   const validatedMessage = () => JSON.stringify("${POST_MESSAGE_IDENTIFIER}///${id}///"+document.documentElement.scrollHeight);
-  parent.postMessage(validatedMessage(), "${location.href}");
+  window.addEventListener("load", () => parent.postMessage(validatedMessage(), "${location.href}"));
   `;
   if (!props.heightCorrectionOnResize) {
     return output;
