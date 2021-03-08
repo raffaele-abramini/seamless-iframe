@@ -18,16 +18,3 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Update package json
-        run: 'sed "s/version\": \".*\"/version\": \"${GITHUB_REF##*/}\"/g" package.json > package.json.temp'
-
-      - name: Remove shit
-        run: cat package.json.temp > package.json; rm package.json.temp
-
-      - name: Commit and push
-        run: |
-          git config --global user.name '⚙️ Release bot'
-          git config --global user.email 'raffaele-abramini@users.noreply.github.com'
-          git commit -am "v${GITHUB_REF##*/}"
-          git push origin HEAD:main
-
