@@ -81,7 +81,12 @@ SeamlessIframe.defaultProps = {
   heightCorrectionOnResize: true,
   debounceResizeTime: 250,
   inheritParentStyle: true,
-  customStyle: "",
+  customStyle: `
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  `,
   customOuterStyleObject: {},
 } as SeamlessIframeProps;
 
