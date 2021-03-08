@@ -18,13 +18,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Get original package json
+        id: "originalPackage"
+        run: echo `cat ./package.json`;
 
-      - name: Install jq
-        run: sudo apt-get install jq
+      - name: get updated package content
+        id: "jq"
+        uses: sergeysova/jq-action@v2
+        with:
+          cmd: jq --arg v ${GITHUB_REF##*/} '.version = $v' <<<"${{ steps.originalPackage.outputs.value }}";
+
       - name: Sync
         run: echo $PWD
       - name: Sync 2
         run: ls
-      - name: Update package json
-        run: originalVersion=`cat ./package.json`; \
-          jq --arg v ${GITHUB_REF##*/} '.version = $v' <<<"$originalVersion";
