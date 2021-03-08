@@ -29,6 +29,7 @@ jobs:
         run: |
           git config --global user.name '⚙️ Release bot'
           git config --global user.email 'raffaele-abramini@users.noreply.github.com'
+          git fetch
           git checkout -b main origin/main
           git commit -am "v${GITHUB_REF##*/}"
           git push
