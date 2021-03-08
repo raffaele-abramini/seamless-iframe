@@ -27,4 +27,4 @@ jobs:
           git config --global user.name '⚙️ Release bot'
           git config --global user.email 'raffaele-abramini@users.noreply.github.com'
           git commit -am "v${GITHUB_REF##*/}"
-          git push
+          git push origin HEAD:main
