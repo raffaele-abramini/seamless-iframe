@@ -34,7 +34,9 @@
     "react": ">= 16",
     "react-dom": ">= 16"
   },
-  "dependencies": {},
+  "dependencies": {
+    "seamless-iframe": "^0.0.3-rc11"
+  },
   "jest": {
     "rootDir": "src",
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$"

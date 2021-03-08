@@ -1,6 +1,6 @@
 import React from "react";
 import reactDom from "react-dom";
-import { SeamlessIframe } from "../src/SeamlessIframe";
+import { SeamlessIframe } from "seamless-iframe";
 import externalHtml from "./examples/externalHtml.html";
 import longHtml from "./examples/longHtml.html";
 import unsafeHtml from "./examples/unsafehtml.html";
