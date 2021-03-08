@@ -50,7 +50,7 @@ const App = () => {
           <h2>2. 🧐 Have a look at the results</h2>
           <p>
             Here's some outer content to show how <strong>seamless</strong> this
-            iframe here.
+            iframe is.
           </p>
           <SeamlessIframe
             sanitizedHtml={sanitize(content, c) as string}
@@ -58,7 +58,7 @@ const App = () => {
           />
           <p>
             Here's some <i>other</i> outer content to show how{" "}
-            <strong>seamless</strong> this iframe here.
+            <strong>seamless</strong> this iframe is.
           </p>
         </div>
       </div>
