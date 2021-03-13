@@ -21,11 +21,8 @@ jobs:
       - name: Install modules
         run: yarn install --prefer-offline
 
-      - name: Run demo
-        run: 'yarn start'
-
       - name: Runs cypress
-        run: 'yarn cypress:run'
+        run: 'yarn start & yarn cypress:run'
 
       - name: Success
         run: 'echo "success"'
