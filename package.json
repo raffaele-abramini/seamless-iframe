@@ -8,9 +8,9 @@
     "dist/"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx parcel public/index.html",
-    "validate": "jest && rimraf ./dist && tsc",
+    "jest": "npx parcel public/index.html",
+    "build": "rimraf ./dist && tsc",
     "cypress:run": "cypress run",
     "cypress": "cypress open"
   },

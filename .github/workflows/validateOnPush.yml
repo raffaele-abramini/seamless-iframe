@@ -17,6 +17,9 @@ jobs:
       - name: Install modules
         run: yarn install --prefer-offline
 
+      - name: Run UI tests
+        run: yarn jest
+
       - name: Run E2E tests
         run: yarn start & yarn cypress:run --browser chrome
 
