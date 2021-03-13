@@ -25,17 +25,20 @@ const customCss2 = `
     color: slategray;
 `;
 
+const isSectionVisible = (section: string) =>
+  window.location.pathname.match(new RegExp(`section/${section}[?/]?$|^/$`));
+
 const visibleSections = {
-  a: false,
-  a1: false,
-  a2: false,
-  a3: true,
-  a4: false,
-  b: false,
-  c: false,
-  d: false,
-  e: false,
-  f: false,
+  a: isSectionVisible("a"),
+  a1: isSectionVisible("a1"),
+  a2: isSectionVisible("a2"),
+  a3: isSectionVisible("a3"),
+  a4: isSectionVisible("a4"),
+  b: isSectionVisible("b"),
+  c: isSectionVisible("c"),
+  d: isSectionVisible("d"),
+  e: isSectionVisible("e"),
+  f: isSectionVisible("f") && false,
 };
 
 const customScript = `
@@ -76,7 +79,7 @@ if (!isStolen) {
               <h3>Default iframe</h3>
               <iframe src={"data:text/html," + externalHtml} />
             </div>
-            <div>
+            <div data-seamless-iframe-container="">
               <h3>Seamless iframe</h3>
               <SeamlessIframe sanitizedHtml={externalHtml} />
             </div>
@@ -91,7 +94,7 @@ if (!isStolen) {
               <h3>Default iframe</h3>
               <iframe src={"data:text/html," + externalHtml} />
             </div>
-            <div>
+            <div data-seamless-iframe-container="">
               <h3>Seamless iframe</h3>
               <SeamlessIframe
                 sanitizedHtml={externalHtml}
@@ -111,7 +114,7 @@ if (!isStolen) {
               <h3>Default iframe</h3>
               <iframe src={"data:text/html," + externalHtml} />
             </div>
-            <div>
+            <div data-seamless-iframe-container="">
               <h3>Seamless iframe</h3>
               <SeamlessIframe
                 sanitizedHtml={externalHtml}
@@ -132,7 +135,7 @@ if (!isStolen) {
               <h3>Default iframe</h3>
               <iframe src={"data:text/html," + externalHtml} />
             </div>
-            <div>
+            <div data-seamless-iframe-container="">
               <h3>Seamless iframe</h3>
               <SeamlessIframe
                 sanitizedHtml={externalHtml}
@@ -154,7 +157,7 @@ if (!isStolen) {
               <h3>Default iframe</h3>
               <iframe src={"data:text/html," + externalHtml} />
             </div>
-            <div>
+            <div data-seamless-iframe-container="">
               <h3>Seamless iframe</h3>
               <SeamlessIframe
                 sanitizedHtml={externalHtml}
@@ -177,7 +180,7 @@ if (!isStolen) {
               <h3>Default iframe</h3>
               <iframe src={"data:text/html," + longHtml} />
             </div>
-            <div>
+            <div data-seamless-iframe-container="">
               <h3>Seamless iframe</h3>
               <SeamlessIframe
                 sanitizedHtml={longHtml}
@@ -198,7 +201,7 @@ if (!isStolen) {
               </div>
             )}
             {visibleContent.seamless && (
-              <div>
+              <div data-seamless-iframe-container="">
                 <h3>Seamless iframe</h3>
                 <SeamlessIframe
                   sanitizedHtml={unsafeHtml}
@@ -227,7 +230,7 @@ if (!isStolen) {
               </div>
             )}
             {visibleContent.seamless && (
-              <div>
+              <div data-seamless-iframe-container="">
                 <h3>Seamless iframe</h3>
                 <SeamlessIframe
                   sanitizedHtml={unsafeHtml2}
@@ -250,7 +253,7 @@ if (!isStolen) {
               </div>
             )}
             {visibleContent.seamless && (
-              <div>
+              <div data-seamless-iframe-container="">
                 <h3>Seamless iframe</h3>
                 <SeamlessIframe
                   sanitizedHtml={htmlWithImage}
@@ -272,7 +275,7 @@ if (!isStolen) {
               </div>
             )}
             {visibleContent.seamless && (
-              <div>
+              <div data-seamless-iframe-container="">
                 <h3>Seamless iframe</h3>
                 <SeamlessIframe
                   sanitizedHtml={extremelyLongHtml}
