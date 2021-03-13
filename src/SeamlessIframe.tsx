@@ -5,6 +5,7 @@ import { POST_MESSAGE_IDENTIFIER, renderResizeScript } from "./getResizeScript";
 export interface SeamlessIframeProps {
   sanitizedHtml: string;
   customStyle?: string;
+  customScript?: string;
   customOuterStyleObject?: Record<string, CSSProperties>;
   heightCorrection?: boolean;
   heightCorrectionOnResize?: boolean;
@@ -18,12 +19,16 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     customStyle,
     customOuterStyleObject,
     sanitizedHtml,
+    customScript,
   } = props;
   const [height, setHeight] = useState(0);
   const [id] = useState(Math.random());
   const parentStyleTags = inheritParentStyle ? getStylesheetElements() : "";
   const styleTag = `<style>${customStyle || ""}</style>`;
   const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
+  const customScriptTag = customScript
+    ? `<script>${customScript}</script>`
+    : "";
 
   useEffect(() => {
     const onMessageCallback = (e: MessageEvent) => {
@@ -68,7 +73,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       src={"data:text/html"}
       srcDoc={`${parentStyleTags}${styleTag}${
         sanitizedHtml || ""
-      }${heightListener}`}
+      }${heightListener}${customScriptTag}`}
       height={height}
     />
   );
