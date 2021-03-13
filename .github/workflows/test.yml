@@ -18,6 +18,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
+      - name: Install modules
+        run: yarn install --prefer-offline
+
       - name: Runs cypress
         run: 'yarn cypress:run'
 
