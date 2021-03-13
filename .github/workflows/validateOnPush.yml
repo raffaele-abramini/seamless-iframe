@@ -1,5 +1,7 @@
 name: Validate on push
-on: push
+on:
+  push:
+    branches:
 
 jobs:
   build:
