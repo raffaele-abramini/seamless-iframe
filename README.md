@@ -31,9 +31,12 @@ export const MyPage = (props) => {
 | `sanitizedHtml` | String | *Required* - HTML string of text to be rendered in the iframe. We suggest to sanitize the HTML before passing to the iframe. | n/a |
 | `inheritParentStyle`| Boolean | Whether to inherit styles on the parent page or not | true 
 | `customStyle` | String | Extra set of css rules for the inner content | `body { margin: 0; padding: 0; }` |
+| `customScript` | String | Extra script to be added to the iframe body | `` |
 | `heightCorrection` | Boolean | Whether to apply the iframe content scroll height to the iframe element or not | true |  
 | `heightCorrectionOnResize` | Boolean | Whether to re apply the height on resize. Off is `heightCorrection` is false | true | 
 | `debounceResizeTime` | Number | Debounce time for reapplying height on the window resize event. If set to 0, no debounce function will be applied | 250 |
+| `listenToLinkClicks` | Boolean | Whether to listen to link clicks. If enabled, the parent window will show a confirmation whenever a link in the iframe gets clicked | false |
+| `customLinkClickCallback` | Function | Function to manipulate the behaviour of the top window on link click. Useless if `listenToLinkClicks` is falsy. | - |
 
 
 ## Use cases

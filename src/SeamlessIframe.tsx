@@ -1,6 +1,18 @@
 import React, { CSSProperties, useEffect, useState } from "react";
 import { getStylesheetElements } from "./getStylesheetElements";
-import { POST_MESSAGE_IDENTIFIER, renderResizeScript } from "./getResizeScript";
+import { renderResizeScript } from "./getResizeScript";
+import {
+  HEIGHT_MESSAGE,
+  LINK_CLICK_MESSAGE,
+  POST_MESSAGE_IDENTIFIER,
+} from "./constants";
+import { getListenToLinksScript } from "./getListenToLinksScript";
+
+const onLinkMessagePosted = (url: string) => {
+  if (window.confirm(`Are you sure you want to open "${url}"?`)) {
+    window.open(url, "_blank", "noopener noreferrer");
+  }
+};
 
 export interface SeamlessIframeProps {
   sanitizedHtml: string;
@@ -11,6 +23,8 @@ export interface SeamlessIframeProps {
   heightCorrectionOnResize?: boolean;
   debounceResizeTime?: number;
   inheritParentStyle?: boolean;
+  listenToLinkClicks?: boolean;
+  customLinkClickCallback?: (url: string) => void;
 }
 
 const SeamlessIframe = (props: SeamlessIframeProps) => {
@@ -20,12 +34,17 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     customOuterStyleObject,
     sanitizedHtml,
     customScript,
+    listenToLinkClicks,
+    customLinkClickCallback,
   } = props;
   const [height, setHeight] = useState(0);
   const [id] = useState(Math.random());
   const parentStyleTags = inheritParentStyle ? getStylesheetElements() : "";
   const styleTag = `<style>${customStyle || ""}</style>`;
   const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
+  const linkClickListener = listenToLinkClicks
+    ? `<script>${getListenToLinksScript(id)}</script>`
+    : "";
   const customScriptTag = customScript
     ? `<script>${customScript}</script>`
     : "";
@@ -33,8 +52,9 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   useEffect(() => {
     const onMessageCallback = (e: MessageEvent) => {
       let messageId = "";
-      let height = "";
       let providedId = "";
+      let messageType = "";
+      let payload = "";
 
       // If no data is provided, return
       if (!e.data) {
@@ -42,7 +62,9 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       }
 
       try {
-        [messageId, providedId, height] = JSON.parse(e.data).split("///");
+        [messageId, providedId, messageType, payload] = JSON.parse(
+          e.data
+        ).split("///");
       } catch (e) {}
 
       // if this message has been triggered by anything else, ignore it
@@ -56,7 +78,19 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       }
 
       // all good, set it.
-      setHeight(Number(height));
+      if (messageType === HEIGHT_MESSAGE) {
+        // payload as height
+        return setHeight(Number(payload));
+      }
+
+      if (messageType === LINK_CLICK_MESSAGE && listenToLinkClicks) {
+        if (customLinkClickCallback) {
+          // payload as url string
+          return customLinkClickCallback(payload);
+        }
+
+        return onLinkMessagePosted(payload);
+      }
     };
 
     // Add listener on mount
@@ -73,7 +107,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       src={"data:text/html"}
       srcDoc={`${parentStyleTags}${styleTag}${
         sanitizedHtml || ""
-      }${heightListener}${customScriptTag}`}
+      }${heightListener}${linkClickListener}${customScriptTag}`}
       height={height}
     />
   );
@@ -91,6 +125,7 @@ SeamlessIframe.defaultProps = {
     }
   `,
   customOuterStyleObject: {},
-} as SeamlessIframeProps;
+  listenToLinkClick: false,
+} as Partial<SeamlessIframeProps>;
 
 export { SeamlessIframe };

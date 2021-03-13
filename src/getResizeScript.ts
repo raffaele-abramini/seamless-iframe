@@ -1,13 +1,12 @@
 import type { SeamlessIframeProps } from "./SeamlessIframe";
-
-export const POST_MESSAGE_IDENTIFIER = "SeamlessIframe";
+import { HEIGHT_MESSAGE, POST_MESSAGE_IDENTIFIER } from "./constants";
 
 export const renderResizeScript = (id: number, props: SeamlessIframeProps) => {
   if (!props.heightCorrection) {
     return "";
   }
   let output = `
-  const validatedMessage = () => JSON.stringify("${POST_MESSAGE_IDENTIFIER}///${id}///"+document.documentElement.offsetHeight);
+  const validatedMessage = () => JSON.stringify("${POST_MESSAGE_IDENTIFIER}///${id}///${HEIGHT_MESSAGE}///"+document.documentElement.offsetHeight);
   window.addEventListener("load", () => parent.postMessage(validatedMessage(), "${location.href}"));
   `;
   if (!props.heightCorrectionOnResize) {

@@ -30,6 +30,7 @@ const visibleSections = {
   a1: false,
   a2: false,
   a3: true,
+  a4: false,
   b: false,
   c: false,
   d: false,
@@ -38,10 +39,10 @@ const visibleSections = {
 };
 
 const customScript = `
-  window.onload = () => {
+  window.addEventListener("load", () => {
     const t = "<div>programmatically added div</div>";
     document.body.innerHtml = t;
-  };
+  });
 `;
 
 const visibleContent = {
@@ -124,6 +125,28 @@ if (!isStolen) {
         </section>
       )}
       {visibleSections.a3 && (
+        <section>
+          <h2>Listen to iframe links clicked</h2>
+          <div className="two-cols">
+            <div>
+              <h3>Default iframe</h3>
+              <iframe src={"data:text/html," + externalHtml} />
+            </div>
+            <div>
+              <h3>Seamless iframe</h3>
+              <SeamlessIframe
+                sanitizedHtml={externalHtml}
+                customStyle={customCss2}
+                inheritParentStyle={false}
+                listenToLinkClicks
+              />
+              <h4>Provided styles</h4>
+              <pre>{customCss2}</pre>
+            </div>
+          </div>
+        </section>
+      )}
+      {visibleSections.a4 && (
         <section>
           <h2>Allows for custom scripts</h2>
           <div className="two-cols">
