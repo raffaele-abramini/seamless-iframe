@@ -1,15 +1,8 @@
 name: Release CI
-
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   release:
     types: [released]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,8 +13,11 @@ jobs:
       - name: Install modules
         run: yarn install --prefer-offline
 
-      - name: Run tests
+      - name: Run UI tests
         run: yarn validate
+
+      - name: Run E2E tests
+        run: yarn start & yarn cypress:run --browser chrome
 
       - name: Update package json - pt. 1
         run: 'sed "s/version\": \".*\"/version\": \"${GITHUB_REF##*/}\"/g" package.json > package.json.temp'
