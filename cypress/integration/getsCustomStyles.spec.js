@@ -9,7 +9,9 @@ describe("Gets custom styles", () => {
       getIframeBody()
         .find("h1")
         .then((h1) => {
-          expect(w.getComputedStyle(h1[0]).fontFamily).equal("Times");
+          expect(w.getComputedStyle(h1[0]).fontFamily).not.equal(
+            '"helvetica neue", helvetica, sans-serif'
+          );
         });
     });
   });
