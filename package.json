@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "start": "npx parcel public/index.html",
-    "jest": "npx parcel public/index.html",
+    "jest": "jest",
     "build": "rimraf ./dist && tsc",
     "cypress:run": "cypress run",
     "cypress": "cypress open"
