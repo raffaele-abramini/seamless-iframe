@@ -21,7 +21,7 @@ describe("Sets heights", () => {
       .wait(250)
       .then((i) => {
         cy.viewport(400, 100)
-          .wait(300)
+          .wait(1000)
           .then(() => {
             getIframeBody()
               .parent("html")
