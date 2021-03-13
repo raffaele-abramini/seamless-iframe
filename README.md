@@ -28,7 +28,7 @@ export const MyPage = (props) => {
 
 | Property | Type | Description  | Default |
 | --- | --- | --- | --- |
-| `sanitizedHtml` | String | *Required* - HTML string of text to be rendered in the iframe. We suggest to sanitize the HTML before passing to the iframe. | n/a |
+| `sanitizedHtml` | String | *Required* - HTML string of text to be rendered in the iframe. We suggest to sanitize the HTML before passing to the iframe. | - |
 | `inheritParentStyle`| Boolean | Whether to inherit styles on the parent page or not | true 
 | `customStyle` | String | Extra set of css rules for the inner content | `body { margin: 0; padding: 0; }` |
 | `customScript` | String | Extra script to be added to the iframe body | `` |

@@ -1,12 +1,7 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Validate on push
-
-# Controls when the action will run.
 on:
   push
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,14 +16,8 @@ jobs:
       - name: Install modules
         run: yarn install --prefer-offline
 
-      - name: Cypress info
-        run: 'npx cypress info'
-
-      - name: Runs cypress
-        run: 'yarn start & yarn cypress:run --browser chrome'
+      - name: Run E2E tests
+        run: yarn start & yarn cypress:run --browser chrome
 
       - name: Success
-        run: 'echo "success"'
-
-      - name: Success
-        run: 'exit 0'
+        run: exit 0
