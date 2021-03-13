@@ -21,8 +21,11 @@ jobs:
       - name: Install modules
         run: yarn install --prefer-offline
 
+      - name: Cypress info
+        run: 'npx cypress info'
+
       - name: Runs cypress
-        run: 'yarn start & yarn cypress:run'
+        run: 'yarn start & yarn cypress:run --browser chrome'
 
       - name: Success
         run: 'echo "success"'
