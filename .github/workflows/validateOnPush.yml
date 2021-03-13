@@ -1,8 +1,5 @@
 name: Validate on push
-on:
-  push
-
-  workflow_dispatch:
+on: push
 
 jobs:
   build:
