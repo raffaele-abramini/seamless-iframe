@@ -11,7 +11,7 @@
     "start": "npx parcel public/index.html",
     "jest": "jest",
     "build": "rimraf ./dist && tsc",
-    "cypress:run": "cypress run",
+    "cypress:run": "cypress run --record=false",
     "cypress": "cypress open"
   },
   "author": "Raffaele Abramini",
