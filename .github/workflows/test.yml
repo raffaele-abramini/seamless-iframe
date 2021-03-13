@@ -19,15 +19,8 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Update package json - pt. 1
-        run: 'sed "s/version\": \".*\"/version\": \"${GITHUB_REF##*/}\"/g" package.json > package.json.temp'
-      - name: Update package json - pt. 2
-        run: cat package.json.temp > package.json; rm package.json.temp
-      - name: Commit and push
-        run: |
-          git config --global user.name '⚙️ Release bot'
-          git config --global user.email 'raffaele-abramini@users.noreply.github.com'
-          git fetch
-          git checkout -b main origin/main
-          git commit -am "v${GITHUB_REF##*/}"
-          git push
+      - name: Runs cypress
+        run: 'yarn cypress:run'
+
+      - name: Success
+        run: 'echo "success"'
