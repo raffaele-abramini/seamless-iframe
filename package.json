@@ -44,5 +44,8 @@
   "jest": {
     "rootDir": "src",
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$"
+  },
+  "resolutions": {
+    "node-forge": "0.10.0"
   }
 }
