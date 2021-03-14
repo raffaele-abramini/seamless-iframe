@@ -1,7 +1,7 @@
 {
   "name": "seamless-iframe",
   "version": "0.0.5-rc4",
-  "description": "A helper to safely render html in iframe",
+  "description": "Seamless Iframe is a customisable library that renders HTML content in iframes as if it was part of your page.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

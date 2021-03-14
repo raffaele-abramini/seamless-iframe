@@ -1,6 +1,6 @@
 # Seamless Iframe
 
-Seamless Iframe is a little helper to render iframes as if they were part of your page.
+Seamless Iframe is a customisable library that renders HTML content in iframes as if it was part of your page.
 
 ## Usage
 
