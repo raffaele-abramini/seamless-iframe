@@ -2,9 +2,19 @@
 
 ![Build](https://github.com/raffaele-abramini/seamless-iframe/actions/workflows/build.yml/badge.svg?branch=main)
 ![ESlint](https://github.com/raffaele-abramini/seamless-iframe/actions/workflows/eslint.yml/badge.svg?branch=main)
+![Size](https://img.shields.io/bundlephobia/minzip/seamless-iframe)
+
 
 Seamless Iframe is a customisable library that renders HTML content in iframes as if it was part of your page.
 
+
+## Quick examples
+
+### 🎨 Inherits styles from parent and vertically resizes
+![Demo for style and resize](https://github.com/raffaele-abramini/seamless-iframe/blob/main/public/assets/iframe-size.gif)
+
+### 🔗 Handle links clicks
+![Demo for handleing link clicks](https://github.com/raffaele-abramini/seamless-iframe/blob/main/public/assets/iframe-link.gif)
 ## Usage
 
 ````jsx
