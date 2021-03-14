@@ -1,13 +1,11 @@
-/// <reference path="../html.d.ts" />
 import React from "react";
 import reactDom from "react-dom";
 import { SeamlessIframe } from "seamless-iframe";
-import externalHtml from "../examples/externalHtml.html";
-import longHtml from "../examples/longHtml.html";
-import unsafeHtml from "../examples/unsafehtml.html";
-import unsafeHtml2 from "../examples/unsafehtml2.html";
-import htmlWithWeirdChars from "../examples/htmlWithWeirdChars.html";
-import extremelyLongHtml from "../examples/extremelyLongHtml.html";
+import externalHtml from "../examples/externalHtml";
+import longHtml from "../examples/longHtml";
+import unsafeHtml from "../examples/unsafehtml";
+import unsafeHtml2 from "../examples/unsafehtml2";
+import htmlWithWeirdChars from "../examples/htmlWithWeirdChars";
 
 const customCss = `
   body {
@@ -200,28 +198,6 @@ function renderExamples() {
                 <h3>Seamless iframe</h3>
                 <SeamlessIframe
                   sanitizedHtml={htmlWithWeirdChars}
-                  customStyle={customCss}
-                />
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-      {visibleSections.f && (
-        <section>
-          <h2>Extremely long html (1.6Mb)</h2>
-          <div className="two-cols">
-            {visibleContent.original && (
-              <div>
-                <h3>Default iframe</h3>
-                <iframe src={"data:text/html," + extremelyLongHtml} />
-              </div>
-            )}
-            {visibleContent.seamless && (
-              <div>
-                <h3>Seamless iframe</h3>
-                <SeamlessIframe
-                  sanitizedHtml={extremelyLongHtml}
                   customStyle={customCss}
                 />
               </div>
