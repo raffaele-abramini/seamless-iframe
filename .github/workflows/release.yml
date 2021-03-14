@@ -40,7 +40,21 @@ jobs:
       - name: Add .npmrc
         run: echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
 
-      - name: Publish
+      - name: Is RC
+        id: is-rc
+        run: |
+          if [[ ${GITHUB_REF##*/} =~ -rc[0-9]+ ]]; then
+               echo ::set-output name=match::true
+          fi
+
+      - name: Publish as next
+        if: steps.is-rc.outputs.match == 'true'
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish
+        run: npm publish --tag next
+
+      - name: Publish as latest
+        if: steps.is-rc.outputs.match != 'true'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --tag latest
