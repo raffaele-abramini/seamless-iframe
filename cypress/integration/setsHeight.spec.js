@@ -19,7 +19,7 @@ describe("Sets heights", () => {
   it("should resize the iframe to match its content even on window resize", () => {
     getLoadedIframe().then((iframe) => {
       cy.viewport(400, 600)
-        .wait(300)
+        .wait(1000) // be generous
         .then(() => {
           getIframeBody()
             .parent("html")
