@@ -5421,9 +5421,9 @@ scheduler@^0.20.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-seamless-iframe@^0.0.4-rc1:
-  version "0.0.4-rc1"
-  resolved "https://registry.yarnpkg.com/seamless-iframe/-/seamless-iframe-0.0.4-rc1.tgz#663a6d226da2f92ba83bca28fffc41791037c2fc"
+seamless-iframe@^0.0.5-rc4:
+  version "0.0.5-rc4"
+  resolved "https://registry.yarnpkg.com/seamless-iframe/-/seamless-iframe-0.0.5-rc4.tgz#460b644da9266f2f6327932c639ca8300a06edd3"
 
 "semver@2 || 3 || 4 || 5", semver@^5.4.1, semver@^5.5.0, semver@^5.6.0:
   version "5.7.1"

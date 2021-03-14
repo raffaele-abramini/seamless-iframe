@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactChild } from "react";
 import reactDom from "react-dom";
 import { SeamlessIframe } from "seamless-iframe";
 import externalHtml from "../examples/externalHtml";
@@ -21,22 +21,6 @@ const customCss2 = `
   }
 `;
 
-const visibleSections = {
-  a: true,
-  a1: true,
-  a2: true,
-  b: true,
-  c: true,
-  d: true,
-  e: true,
-  f: false,
-};
-
-const visibleContent = {
-  original: true,
-  seamless: true,
-};
-
 const [isStolen] = location?.pathname.match(/stolen/g) || [];
 
 if (isStolen) {
@@ -49,162 +33,160 @@ if (isStolen) {
   );
 }
 
+interface BlockProps {
+  title?: string;
+  header?: ReactChild;
+  firstCol: ReactChild;
+  secondCol: ReactChild;
+  isFirst?: boolean;
+}
+
+const SectionBlock = (props: BlockProps) => {
+  return (
+    <section>
+      {props.isFirst && <span />}
+      {props.header || <h2>{props.title}</h2>}
+      <div className="two-cols">
+        <div>{props.firstCol}</div>
+        <div>{props.secondCol}</div>
+      </div>
+    </section>
+  );
+};
+
 localStorage.setItem("secret", "mySecretCode");
 document.cookie = "mySecretCookie";
 
 function renderExamples() {
   reactDom.render(
     <main>
-      {visibleSections.a && (
-        <section>
-          <span />
-          <h2>Automatically gets styles from parent window</h2>
-          <div className="two-cols">
-            <div>
-              <h3>Default iframe</h3>
-              <iframe src={"data:text/html," + externalHtml} />
-            </div>
-            <div>
-              <h3>Seamless iframe</h3>
-              <SeamlessIframe sanitizedHtml={externalHtml} />
-            </div>
-          </div>
-        </section>
-      )}
-      {visibleSections.a1 && (
-        <section>
-          <h2>Receives custom styles</h2>
-          <div className="two-cols">
-            <div>
-              <h3>Default iframe</h3>
-              <iframe src={"data:text/html," + externalHtml} />
-            </div>
-            <div>
-              <h3>Seamless iframe</h3>
-              <SeamlessIframe
-                sanitizedHtml={externalHtml}
-                customStyle={customCss2}
-              />
-              <h4>Provided styles</h4>
-              <pre>{customCss2}</pre>
-            </div>
-          </div>
-        </section>
-      )}
-      {visibleSections.a2 && (
-        <section>
-          <h2>Ignores parent style, just get custom style</h2>
-          <div className="two-cols">
-            <div>
-              <h3>Default iframe</h3>
-              <iframe src={"data:text/html," + externalHtml} />
-            </div>
-            <div>
-              <h3>Seamless iframe</h3>
-              <SeamlessIframe
-                sanitizedHtml={externalHtml}
-                customStyle={customCss2}
-                inheritParentStyle={false}
-              />
-              <h4>Provided styles</h4>
-              <pre>{customCss2}</pre>
-            </div>
-          </div>
-        </section>
-      )}
-      {visibleSections.b && (
-        <section>
-          <h2>Automatically resizes its height</h2>
+      <SectionBlock
+        title="Automatically gets styles from parent window"
+        isFirst
+        firstCol={
+          <>
+            <h3>Default iframe</h3>
+            <iframe src={"data:text/html," + externalHtml} />
+          </>
+        }
+        secondCol={
+          <>
+            <h3>Seamless iframe</h3>
+            <SeamlessIframe sanitizedHtml={externalHtml} />
+          </>
+        }
+      />
 
-          <div className="two-cols">
-            <div>
-              <h3>Default iframe</h3>
-              <iframe src={"data:text/html," + longHtml} />
-            </div>
-            <div>
-              <h3>Seamless iframe</h3>
-              <SeamlessIframe
-                sanitizedHtml={longHtml}
-                customStyle={customCss}
-              />
-            </div>
-          </div>
-        </section>
-      )}
-      {visibleSections.c && (
-        <section>
-          <h2>Prevents injected content from submitting forms</h2>
-          <div className="two-cols">
-            {visibleContent.original && (
-              <div>
-                <h3>HTML directly injected in page</h3>
-                <div dangerouslySetInnerHTML={{ __html: unsafeHtml }} />
-              </div>
-            )}
-            {visibleContent.seamless && (
-              <div>
-                <h3>Seamless iframe</h3>
-                <SeamlessIframe
-                  sanitizedHtml={unsafeHtml}
-                  customStyle={customCss}
-                />
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+      <SectionBlock
+        title="Receives custom styles"
+        isFirst
+        firstCol={
+          <>
+            <h3>Default iframe</h3>
+            <iframe src={"data:text/html," + externalHtml} />
+          </>
+        }
+        secondCol={
+          <>
+            <h3>Seamless iframe</h3>
+            <SeamlessIframe
+              sanitizedHtml={externalHtml}
+              customStyle={customCss2}
+            />
+            <h4>Provided styles</h4>
+            <pre>{customCss2}</pre>
+          </>
+        }
+      />
+      <SectionBlock
+        title="Ignores parent style, just get custom style"
+        isFirst
+        firstCol={
+          <>
+            <h3>Default iframe</h3>
+            <iframe src={"data:text/html," + externalHtml} />
+          </>
+        }
+        secondCol={
+          <>
+            <h3>Seamless iframe</h3>
+            <SeamlessIframe
+              sanitizedHtml={externalHtml}
+              customStyle={customCss2}
+              inheritParentStyle={false}
+            />
+            <h4>Provided styles</h4>
+            <pre>{customCss2}</pre>
+          </>
+        }
+      />
 
-      {visibleSections.d && (
-        <section>
-          <h2>
-            Prevents rendered html from accessing location, cookies and storage
-          </h2>
-          <p>
-            For this example we are storing a localStorage key of "mySecretCode"
-            and a cookie of value "test"
-          </p>
-          <div className="two-cols">
-            {visibleContent.original && (
-              <div>
-                <h3>HTML directly injected in page</h3>
-                <div dangerouslySetInnerHTML={{ __html: unsafeHtml2 }} />
-              </div>
-            )}
-            {visibleContent.seamless && (
-              <div>
-                <h3>Seamless iframe</h3>
-                <SeamlessIframe
-                  sanitizedHtml={unsafeHtml2}
-                  customStyle={customCss}
-                />
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+      <SectionBlock
+        title="Automatically resizes its height"
+        isFirst
+        firstCol={
+          <>
+            <h3>Default iframe</h3>
+            <iframe src={"data:text/html," + longHtml} />
+          </>
+        }
+        secondCol={
+          <>
+            <h3>Seamless iframe</h3>
+            <SeamlessIframe sanitizedHtml={longHtml} customStyle={customCss} />
+          </>
+        }
+      />
 
-      {visibleSections.e && (
-        <section>
-          <h2>Works with weird quotes and chars</h2>
-          <div className="two-cols">
-            {visibleContent.original && (
-              <div>
-                <h3>Default iframe</h3>
-                <iframe src={"data:text/html," + htmlWithWeirdChars} />
-              </div>
-            )}
-            {visibleContent.seamless && (
-              <div>
-                <h3>Seamless iframe</h3>
-                <SeamlessIframe
-                  sanitizedHtml={htmlWithWeirdChars}
-                  customStyle={customCss}
-                />
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+      <SectionBlock
+        title="Prevents injected content from submitting forms"
+        isFirst
+        firstCol={
+          <>
+            <h3>HTML directly injected in page</h3>
+            <div dangerouslySetInnerHTML={{ __html: unsafeHtml }} />
+          </>
+        }
+        secondCol={
+          <>
+            <h3>Seamless iframe</h3>
+            <SeamlessIframe
+              sanitizedHtml={unsafeHtml}
+              customStyle={customCss}
+            />
+          </>
+        }
+      />
+      <SectionBlock
+        header={
+          <>
+            <h2>
+              Prevents rendered html from accessing location, cookies and
+              storage
+            </h2>
+            <p>
+              For this example we are storing a localStorage key of
+              "mySecretCode" and a cookie of value "test"
+            </p>
+          </>
+        }
+        isFirst
+        firstCol={
+          <>
+            <h3>HTML directly injected in page</h3>
+            <div dangerouslySetInnerHTML={{ __html: unsafeHtml2 }} />
+          </>
+        }
+        secondCol={
+          <>
+            <h3>Seamless iframe</h3>
+            <SeamlessIframe
+              sanitizedHtml={unsafeHtml2}
+              customStyle={customCss}
+            />
+          </>
+        }
+      />
     </main>,
     document.getElementById("app")
   );

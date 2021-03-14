@@ -36,7 +36,7 @@
     "react-dom": ">= 16"
   },
   "dependencies": {
-    "seamless-iframe": "^0.0.4-rc1"
+    "seamless-iframe": "^0.0.5-rc4"
   },
   "jest": {
     "rootDir": "src",
