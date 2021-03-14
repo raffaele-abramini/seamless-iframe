@@ -1,6 +1,7 @@
 # Seamless Iframe
 
 ![Build](https://github.com/raffaele-abramini/seamless-iframe/actions/workflows/build.yml/badge.svg?branch=main)
+![ESlint](https://github.com/raffaele-abramini/seamless-iframe/actions/workflows/eslint.yml/badge.svg?branch=main)
 
 Seamless Iframe is a customisable library that renders HTML content in iframes as if it was part of your page.
 

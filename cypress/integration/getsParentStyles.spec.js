@@ -1,4 +1,5 @@
 import { getIframeDocument, getIframeBody } from "../helpers";
+
 describe("Gets parent styles", () => {
   beforeEach("visits the app", () => {
     cy.visit("/section/default");

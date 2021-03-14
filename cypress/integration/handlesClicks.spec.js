@@ -1,4 +1,5 @@
 import { getIframeBody } from "../helpers";
+
 describe("Handles clicks when specified", () => {
   beforeEach("visits the app", () => {
     cy.visit("/section/default", {
