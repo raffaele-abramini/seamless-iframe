@@ -1,7 +1,7 @@
 import { getIframeDocument, getIframeBody } from "../helpers";
 describe("Gets parent styles", () => {
   beforeEach("visits the app", () => {
-    cy.visit("/section/a");
+    cy.visit("/section/default");
   });
 
   it("should set h1 to sans-serif", () => {

@@ -1,9 +1,9 @@
 import { getIframeBody } from "../helpers";
 describe("Handles clicks when specified", () => {
   beforeEach("visits the app", () => {
-    cy.visit("/section/a3", {
+    cy.visit("/section/default", {
       onBeforeLoad(win) {
-        cy.spy(win, "open");
+        cy.stub(win, "open");
         cy.spy(win, "confirm");
       },
     });

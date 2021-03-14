@@ -21,7 +21,7 @@ jobs:
         run: yarn jest
 
       - name: Run E2E tests
-        run: yarn start & yarn cypress:run --browser chrome
+        run: yarn start:e2eApp & yarn cypress:run --browser chrome
 
       - name: Success
         run: exit 0

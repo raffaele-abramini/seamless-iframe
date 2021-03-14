@@ -1,12 +1,12 @@
-import { getIframeBody, getIframeDocument, IFRAME_SELECTOR } from "../helpers";
+import { getIframeBody, getLoadedIframe } from "../helpers";
 
 describe("Sets heights", () => {
   beforeEach("visits the app", () => {
-    cy.visit("/section/b");
+    cy.visit("/section/default");
   });
 
   it("should resize the iframe to match its content", () => {
-    cy.get(IFRAME_SELECTOR)
+    getLoadedIframe()
       .wait(250)
       .then((i) => {
         getIframeBody()
@@ -17,17 +17,15 @@ describe("Sets heights", () => {
   });
 
   it("should resize the iframe to match its content even on window resize", () => {
-    cy.get(IFRAME_SELECTOR)
-      .wait(250)
-      .then((i) => {
-        cy.viewport(400, 100)
-          .wait(1000)
-          .then(() => {
-            getIframeBody()
-              .parent("html")
-              .its("0.scrollHeight")
-              .should("equal", i["0"].scrollHeight);
-          });
-      });
+    getLoadedIframe().then((iframe) => {
+      cy.viewport(400, 600)
+        .wait(300)
+        .then(() => {
+          getIframeBody()
+            .parent("html")
+            .its("0.scrollHeight")
+            .should("equal", iframe["0"].scrollHeight);
+        });
+    });
   });
 });

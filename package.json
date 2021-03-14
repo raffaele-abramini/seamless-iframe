@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "start": "npx parcel public/index.html",
+    "start:e2eApp": "npx parcel public/e2e/index.html",
     "jest": "jest",
     "build": "rimraf ./dist && tsc",
     "cypress:run": "cypress run --record=false",

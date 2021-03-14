@@ -8,12 +8,12 @@ export const getIframeDocument = () => {
     .should("exist");
 };
 
+export const getLoadedIframe = () => {
+  return cy.get(IFRAME_SELECTOR).wait(500).should("exist");
+};
+
 export const getIframeWindow = () => {
-  return cy
-    .get(IFRAME_SELECTOR)
-    .wait(300)
-    .its("0.contentWindow")
-    .should("exist");
+  return cy.get(IFRAME_SELECTOR).its("0.contentWindow").should("exist");
 };
 
 export const getIframeBody = () => {

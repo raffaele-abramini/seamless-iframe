@@ -1,7 +1,7 @@
 import { getIframeWindow, getIframeBody } from "../helpers";
 describe("Gets custom styles", () => {
   beforeEach("visits the app", () => {
-    cy.visit("/section/a2");
+    cy.visit("/section/ignoreParentStyles");
   });
 
   it("should ignore parents styles", () => {
