@@ -25,6 +25,7 @@ export interface SeamlessIframeProps {
   inheritParentStyle?: boolean;
   listenToLinkClicks?: boolean;
   customLinkClickCallback?: (url: string) => void;
+  title?: string;
 }
 
 const SeamlessIframe = (props: SeamlessIframeProps) => {
@@ -36,6 +37,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     customScript,
     listenToLinkClicks,
     customLinkClickCallback,
+    title,
   } = props;
   const [height, setHeight] = useState(0);
   const [id] = useState(Math.random());
@@ -50,20 +52,20 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     : "";
 
   useEffect(() => {
-    const onMessageCallback = (e: MessageEvent) => {
+    const onMessageCallback = (event: MessageEvent) => {
       let messageId = "";
       let providedId = "";
       let messageType = "";
       let payload = "";
 
       // If no data is provided, return
-      if (!e.data) {
+      if (!event.data) {
         return;
       }
 
       try {
         [messageId, providedId, messageType, payload] = JSON.parse(
-          e.data
+          event.data
         ).split("///");
       } catch (e) {}
 
@@ -104,7 +106,8 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     <iframe
       style={{ border: "none", width: "100%", ...customOuterStyleObject }}
       sandbox="allow-scripts"
-      src={"data:text/html"}
+      src="data:text/html"
+      title={title}
       srcDoc={`${parentStyleTags}${styleTag}${
         sanitizedHtml || ""
       }${heightListener}${linkClickListener}${customScriptTag}`}
@@ -126,6 +129,7 @@ SeamlessIframe.defaultProps = {
   `,
   customOuterStyleObject: {},
   listenToLinkClick: false,
+  title: "",
 } as Partial<SeamlessIframeProps>;
 
 export { SeamlessIframe };

@@ -1,7 +1,7 @@
 /// <reference path="./html.d.ts" />
 import React from "react";
 import reactDom from "react-dom";
-import { SeamlessIframe } from "../src/SeamlessIframe";
+import { SeamlessIframe } from "../src";
 import externalHtml from "./examples/externalHtml.html";
 import longHtml from "./examples/longHtml.html";
 import unsafeHtml from "./examples/unsafehtml.html";
@@ -53,7 +53,7 @@ const visibleContent = {
   seamless: true,
 };
 
-const [isStolen] = location?.pathname.match(/stolen/g) || [];
+const [isStolen] = window.location?.pathname.match(/stolen/g) || [];
 
 if (isStolen) {
   reactDom.render(

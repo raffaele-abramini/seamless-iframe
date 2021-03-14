@@ -6,8 +6,8 @@ export const renderResizeScript = (id: number, props: SeamlessIframeProps) => {
     return "";
   }
   let output = `
-  const validatedMessage = () => JSON.stringify("${POST_MESSAGE_IDENTIFIER}///${id}///${HEIGHT_MESSAGE}///"+document.documentElement.offsetHeight);
-  window.addEventListener("load", () => parent.postMessage(validatedMessage(), "${location.href}"));
+    const validatedMessage = () => JSON.stringify("${POST_MESSAGE_IDENTIFIER}///${id}///${HEIGHT_MESSAGE}///"+document.documentElement.offsetHeight);
+    window.addEventListener("load", () => parent.postMessage(validatedMessage(), "${window.location.href}"));
   `;
   if (!props.heightCorrectionOnResize) {
     return output;
@@ -30,16 +30,16 @@ export const renderResizeScript = (id: number, props: SeamlessIframeProps) => {
             };
         };
         const handleResize = debounce(() => {
-            parent.postMessage(validatedMessage(), "${location.href}")
+            parent.postMessage(validatedMessage(), "${window.location.href}")
         }, ${props.debounceResizeTime});
 `;
   } else {
     output += `
         const handleResize = () => {
-            parent.postMessage(validatedMessage(), "${location.href}")
+            parent.postMessage(validatedMessage(), "${window.location.href}")
         };
     `;
   }
 
-  return output + 'window.addEventListener("resize", handleResize);';
+  return output + `window.addEventListener("resize", handleResize);`;
 };
