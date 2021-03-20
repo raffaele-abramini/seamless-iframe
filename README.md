@@ -1,21 +1,22 @@
-# Seamless Iframe
+# Seamless Iframe 🔮
 
+![Build](https://img.shields.io/badge/Built%20with-React-blue) 
 ![Build](https://github.com/raffaele-abramini/seamless-iframe/actions/workflows/build.yml/badge.svg?branch=main)
 ![ESlint](https://github.com/raffaele-abramini/seamless-iframe/actions/workflows/eslint.yml/badge.svg?branch=main)
 ![Size](https://img.shields.io/bundlephobia/minzip/seamless-iframe)
-![Dependencies](https://img.shields.io/badge/depedencies-0-informational)
+![Dependencies](https://status.david-dm.org/gh/raffaele-abramini/seamless-iframe.svg)
+![Coverage](https://img.shields.io/badge/coverage-100%25-success)
 
-
-Seamless Iframe is a customisable library that renders HTML content in iframes as if it was part of your page.
+Seamless Iframe is a customisable React component that allows you to render HTML content in an iframe and makes it look as if it was part of the page itself. Seamless! 👻 
 
 
 ## Quick examples
 
-### 🎨 Inherits styles from parent and vertically resizes
+### 🎨 Inherits styles from the parent document and vertically updates its height
 ![Demo for style and resize](https://github.com/raffaele-abramini/seamless-iframe/blob/main/public/assets/iframe-size.gif)
 
-### 🔗 Handle links clicks
-![Demo for handleing link clicks](https://github.com/raffaele-abramini/seamless-iframe/blob/main/public/assets/iframe-link.gif)
+### 🔗 Handle user clicks on links
+![Demo for handling link clicks](https://github.com/raffaele-abramini/seamless-iframe/blob/main/public/assets/iframe-link.gif)
 ## Usage
 
 ````jsx
