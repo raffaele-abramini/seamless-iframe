@@ -8,6 +8,7 @@ import {
   POST_MESSAGE_IDENTIFIER,
 } from "../constants";
 import { getListenToLinksScript } from "../getListenToLinksScript";
+import { mockDocumentStylesheets } from "./helpers";
 
 const getIframe = (result: RenderResult): HTMLIFrameElement =>
   result.container.querySelector("iframe")!;
@@ -32,6 +33,20 @@ it("renders an iframe with its content", async () => {
   expect(iframe.srcdoc).toContain("yo");
 });
 
+it("doesn't throw errors if not html is provided", async () => {
+  const container = render(
+    <SeamlessIframe
+      sanitizedHtml=""
+      customScript={undefined}
+      inheritParentStyle={false}
+      heightCorrection={false}
+      customStyle=""
+    />
+  );
+  const iframe = getIframe(container);
+  expect(iframe).toBeTruthy();
+});
+
 it("renders an iframe with custom styles", async () => {
   const container = render(
     <SeamlessIframe
@@ -39,11 +54,30 @@ it("renders an iframe with custom styles", async () => {
       customScript={undefined}
       inheritParentStyle={false}
       heightCorrection={false}
-      customStyle="body { background: red; }"
+      customStyle="body { background: tomato; }"
     />
   );
   const iframe = getIframe(container);
-  expect(iframe.srcdoc).toContain("<style>body { background: red; }</style>");
+  expect(iframe.srcdoc).toContain(
+    "<style>body { background: tomato; }</style>"
+  );
+});
+
+it("renders an iframe that inherits custom styles", async () => {
+  const cleanupStylesheets = mockDocumentStylesheets();
+  const container = render(
+    <SeamlessIframe
+      sanitizedHtml="yo"
+      customScript={undefined}
+      inheritParentStyle
+      heightCorrection={false}
+    />
+  );
+  const iframe = getIframe(container);
+  expect(iframe.srcdoc).toContain(
+    "<style>body { background: red; }</style><style>body { background: blue; }</style>"
+  );
+  cleanupStylesheets();
 });
 
 it("renders an iframe with custom scripts", async () => {
@@ -140,6 +174,50 @@ describe("height correction", () => {
     });
 
     expect(iframe.height).toBe("100");
+  });
+
+  it("doesn't set iframe height if no data is provided to the message", async () => {
+    const container = render(
+      <SeamlessIframe
+        sanitizedHtml="yo"
+        inheritParentStyle={false}
+        heightCorrection
+        heightCorrectionOnResize={false}
+      />
+    );
+    const iframe = getIframe(container);
+
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: undefined,
+        })
+      );
+    });
+
+    expect(iframe.height).toBe("0");
+  });
+
+  it("doesn't set iframe height and doesn't throw errors if data is not a valid json object", async () => {
+    const container = render(
+      <SeamlessIframe
+        sanitizedHtml="yo"
+        inheritParentStyle={false}
+        heightCorrection
+        heightCorrectionOnResize={false}
+      />
+    );
+    const iframe = getIframe(container);
+
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: "{test:}",
+        })
+      );
+    });
+
+    expect(iframe.height).toBe("0");
   });
 
   it("doesn't set iframe height if messageId is not compatible", async () => {
@@ -249,6 +327,8 @@ describe("link click support", () => {
   });
 
   it("reacts to link-related posted messages if listenToLinkClicks is set", async () => {
+    jest.spyOn(window, "open").mockImplementation();
+
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
@@ -257,7 +337,8 @@ describe("link click support", () => {
         listenToLinkClicks
       />
     );
-
+    // Assert with user confirmation
+    (window.confirm as jest.Mock).mockImplementationOnce(() => true);
     act(() => {
       window.dispatchEvent(
         new MessageEvent("message", {
@@ -267,8 +348,27 @@ describe("link click support", () => {
         })
       );
     });
-
     expect(window.confirm).toHaveBeenCalledWith(expect.stringContaining(url));
+    expect(window.open).toHaveBeenCalledWith(
+      url,
+      "_blank",
+      "noopener noreferrer"
+    );
+
+    // Assert without user confirmation
+    (window.open as jest.Mock).mockClear();
+    (window.confirm as jest.Mock).mockImplementationOnce(() => false);
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: JSON.stringify(
+            `${POST_MESSAGE_IDENTIFIER}///${iframeID}///${LINK_CLICK_MESSAGE}///${url}`
+          ),
+        })
+      );
+    });
+    expect(window.confirm).toHaveBeenCalledWith(expect.stringContaining(url));
+    expect(window.open).not.toHaveBeenCalled();
   });
 
   it("doesn't react to link-related posted messages if listenToLinkClicks is set but messageId is incorrect", async () => {
@@ -319,7 +419,7 @@ describe("link click support", () => {
     );
   });
 
-  it("doesn't react to link-related posted messages if message type is not correct", async () => {
+  it("doesn't react to link-related posted messages if message type is incorrect", async () => {
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
@@ -341,5 +441,31 @@ describe("link click support", () => {
     expect(window.confirm).not.toHaveBeenCalledWith(
       expect.stringContaining(url)
     );
+  });
+
+  it("reacts to link-related posted messages with custom callback if that and listenToLinkClicks are set", async () => {
+    const spy = jest.fn();
+    render(
+      <SeamlessIframe
+        sanitizedHtml="yo"
+        inheritParentStyle={false}
+        heightCorrection={false}
+        listenToLinkClicks
+        customLinkClickCallback={spy}
+      />
+    );
+
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: JSON.stringify(
+            `${POST_MESSAGE_IDENTIFIER}///${iframeID}///${LINK_CLICK_MESSAGE}///${url}`
+          ),
+        })
+      );
+    });
+
+    expect(window.confirm).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(url);
   });
 });
