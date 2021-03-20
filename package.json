@@ -19,6 +19,8 @@
   "author": "Raffaele Abramini",
   "license": "ISC",
   "devDependencies": {
+    "@testing-library/dom": "^7.30.0",
+    "@testing-library/react": "^11.2.5",
     "@types/dompurify": "^2.2.1",
     "@types/jest": "^26.0.20",
     "@types/react": "^17.0.2",
@@ -41,7 +43,6 @@
     "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-testing-library": "^8.0.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
@@ -59,7 +60,7 @@
   "dependencies": {},
   "jest": {
     "rootDir": "src",
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+    "testRegex": "/__tests__/.*\\.test",
     "preset": "ts-jest",
     "transform": {
       "^.+\\.(ts|tsx)?$": "ts-jest",
