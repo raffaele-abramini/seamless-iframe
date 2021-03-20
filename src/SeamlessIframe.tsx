@@ -7,26 +7,13 @@ import {
   POST_MESSAGE_IDENTIFIER,
 } from "./constants";
 import { getListenToLinksScript } from "./getListenToLinksScript";
+import type { SeamlessIframeProps } from "./definitions";
 
 const onLinkMessagePosted = (url: string) => {
   if (window.confirm(`Are you sure you want to open "${url}"?`)) {
     window.open(url, "_blank", "noopener noreferrer");
   }
 };
-
-export interface SeamlessIframeProps {
-  sanitizedHtml: string;
-  customStyle?: string;
-  customScript?: string;
-  customOuterStyleObject?: Record<string, CSSProperties>;
-  heightCorrection?: boolean;
-  heightCorrectionOnResize?: boolean;
-  debounceResizeTime?: number;
-  inheritParentStyle?: boolean;
-  listenToLinkClicks?: boolean;
-  customLinkClickCallback?: (url: string) => void;
-  title?: string;
-}
 
 const SeamlessIframe = (props: SeamlessIframeProps) => {
   const {

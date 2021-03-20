@@ -59,7 +59,13 @@
   "dependencies": {},
   "jest": {
     "rootDir": "src",
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$"
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+    "preset": "ts-jest",
+    "transform": {
+      "^.+\\.(ts|tsx)?$": "ts-jest",
+      "^.+\\.(js|jsx)$": "babel-jest"
+    },
+    "clearMocks": true
   },
   "resolutions": {
     "node-forge": "0.10.0"

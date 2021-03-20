@@ -31,7 +31,8 @@
     "prefer-template": "off",
     "react/no-unescaped-entities": "off",
     "jsx-a11y/iframe-has-title": "off",
-    "no-alert": "off"
+    "no-alert": "off",
+    "no-underscore-dangle": "off"
   },
   "settings": {
     "import/resolver": {
