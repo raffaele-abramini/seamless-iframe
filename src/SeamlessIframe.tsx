@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getStylesheetElements } from "./getStylesheetElements";
 import { renderResizeScript } from "./getResizeScript";
 import {
@@ -7,6 +7,7 @@ import {
   POST_MESSAGE_IDENTIFIER,
 } from "./constants";
 import { getListenToLinksScript } from "./getListenToLinksScript";
+import type { SeamlessIframeProps } from "./definitions";
 
 const onLinkMessagePosted = (url: string) => {
   if (window.confirm(`Are you sure you want to open "${url}"?`)) {
@@ -14,19 +15,8 @@ const onLinkMessagePosted = (url: string) => {
   }
 };
 
-export interface SeamlessIframeProps {
-  sanitizedHtml: string;
-  customStyle?: string;
-  customScript?: string;
-  customOuterStyleObject?: Record<string, CSSProperties>;
-  heightCorrection?: boolean;
-  heightCorrectionOnResize?: boolean;
-  debounceResizeTime?: number;
-  inheritParentStyle?: boolean;
-  listenToLinkClicks?: boolean;
-  customLinkClickCallback?: (url: string) => void;
-  title?: string;
-}
+const wrapInScript = (script: string) => `<script>${script}</script>`;
+const wrapInStyle = (style: string) => `<style>${style}</style>`;
 
 const SeamlessIframe = (props: SeamlessIframeProps) => {
   const {
@@ -38,18 +28,19 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     listenToLinkClicks,
     customLinkClickCallback,
     title,
+    heightCorrection,
   } = props;
   const [height, setHeight] = useState(0);
   const [id] = useState(Math.random());
   const parentStyleTags = inheritParentStyle ? getStylesheetElements() : "";
-  const styleTag = `<style>${customStyle || ""}</style>`;
-  const heightListener = `<script>${renderResizeScript(id, props)}</script>`;
+  const styleTag = customStyle ? wrapInStyle(customStyle) : "";
+  const heightListener = heightCorrection
+    ? wrapInScript(renderResizeScript(id, props))
+    : "";
   const linkClickListener = listenToLinkClicks
-    ? `<script>${getListenToLinksScript(id)}</script>`
+    ? wrapInScript(getListenToLinksScript(id))
     : "";
-  const customScriptTag = customScript
-    ? `<script>${customScript}</script>`
-    : "";
+  const customScriptTag = customScript ? wrapInScript(customScript) : "";
 
   useEffect(() => {
     const onMessageCallback = (event: MessageEvent) => {

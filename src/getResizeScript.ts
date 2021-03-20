@@ -1,13 +1,20 @@
-import type { SeamlessIframeProps } from "./SeamlessIframe";
 import { HEIGHT_MESSAGE, POST_MESSAGE_IDENTIFIER } from "./constants";
+import { SeamlessIframeProps } from "./definitions";
 
-export const renderResizeScript = (id: number, props: SeamlessIframeProps) => {
+export const renderResizeScript = (
+  id: number,
+  props: Pick<
+    SeamlessIframeProps,
+    "heightCorrection" | "heightCorrectionOnResize" | "debounceResizeTime"
+  >
+) => {
   if (!props.heightCorrection) {
     return "";
   }
   let output = `
     const validatedMessage = () => JSON.stringify("${POST_MESSAGE_IDENTIFIER}///${id}///${HEIGHT_MESSAGE}///"+document.documentElement.offsetHeight);
-    window.addEventListener("load", () => parent.postMessage(validatedMessage(), "${window.location.href}"));
+    window.__seamlessHeightLoad = () => parent.postMessage(validatedMessage(), "${window.location.href}");
+    window.addEventListener("load", window.__seamlessHeightLoad);
   `;
   if (!props.heightCorrectionOnResize) {
     return output;
@@ -29,17 +36,19 @@ export const renderResizeScript = (id: number, props: SeamlessIframeProps) => {
                 if (callNow) func.apply(context, args);
             };
         };
-        const handleResize = debounce(() => {
+        window.__seamlessHeightResize = debounce(() => {
             parent.postMessage(validatedMessage(), "${window.location.href}")
         }, ${props.debounceResizeTime});
 `;
   } else {
     output += `
-        const handleResize = () => {
+        window.__seamlessHeightResize = () => {
             parent.postMessage(validatedMessage(), "${window.location.href}")
         };
     `;
   }
 
-  return output + `window.addEventListener("resize", handleResize);`;
+  return (
+    output + `window.addEventListener("resize", window.__seamlessHeightResize);`
+  );
 };
