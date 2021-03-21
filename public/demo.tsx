@@ -44,7 +44,7 @@ const visibleSections = {
 const customScript = `
   window.addEventListener("load", () => {
     const t = "<div>programmatically added div</div>";
-    document.body.innerHtml = t;
+    document.body.innerHTML = t;
   });
 `;
 
