@@ -3,6 +3,7 @@ import React from "react";
 import reactDom from "react-dom";
 import { SeamlessIframe } from "../src";
 import externalHtml from "./examples/externalHtml.html";
+import redirectScriptHtml from "./examples/redirectScript.html";
 import longHtml from "./examples/longHtml.html";
 import unsafeHtml from "./examples/unsafehtml.html";
 import unsafeHtml2 from "./examples/unsafehtml2.html";
@@ -34,6 +35,7 @@ const visibleSections = {
   a2: isSectionVisible("a2"),
   a3: isSectionVisible("a3"),
   a4: isSectionVisible("a4"),
+  a5: isSectionVisible("a5"),
   b: isSectionVisible("b"),
   c: isSectionVisible("c"),
   d: isSectionVisible("d"),
@@ -150,6 +152,31 @@ if (!isStolen) {
         </section>
       )}
       {visibleSections.a4 && (
+        <section>
+          <h2>Prevents iframe from navigating away</h2>
+          <p>
+            If somehow a script gets passed sanitization and tries redirect the
+            iframe by changing the <code>location.href</code>, Seamless Iframe
+            comes with a listener to intercept it.
+          </p>
+          <div className="two-cols">
+            <div>
+              <h3>Default iframe</h3>
+              <iframe src={"data:text/html," + externalHtml} />
+            </div>
+            <div data-seamless-iframe-container="">
+              <h3>Seamless iframe</h3>
+              <SeamlessIframe
+                sanitizedHtml={redirectScriptHtml}
+                customStyle={customCss2}
+                inheritParentStyle={false}
+                listenToUnloadEvent
+              />
+            </div>
+          </div>
+        </section>
+      )}
+      {visibleSections.a5 && (
         <section>
           <h2>Allows for custom scripts</h2>
           <div className="two-cols">

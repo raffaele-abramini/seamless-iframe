@@ -10,6 +10,7 @@ export interface SeamlessIframeProps {
   debounceResizeTime?: number;
   inheritParentStyle?: boolean;
   listenToLinkClicks?: boolean;
+  listenToUnloadEvent?: boolean;
   customLinkClickCallback?: (url: string) => void;
   title?: string;
 }

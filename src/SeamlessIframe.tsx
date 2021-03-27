@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getStylesheetElements } from "./getStylesheetElements";
 import { renderResizeScript } from "./getResizeScript";
 import {
   HEIGHT_MESSAGE,
+  IFRAME_UNLOAD,
   LINK_CLICK_MESSAGE,
   POST_MESSAGE_IDENTIFIER,
 } from "./constants";
 import { getListenToLinksScript } from "./getListenToLinksScript";
 import type { SeamlessIframeProps } from "./definitions";
+import { getBeforeUnloadScript } from "./getBeforeUnloadScript";
 
 const onLinkMessagePosted = (url: string) => {
   if (window.confirm(`Are you sure you want to open "${url}"?`)) {
@@ -29,9 +31,16 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     customLinkClickCallback,
     title,
     heightCorrection,
+    listenToUnloadEvent,
   } = props;
+
   const [height, setHeight] = useState(0);
+  const [iframeUnloadPreventState, setIframeUnloadPreventState] = useState({
+    preventing: false,
+    times: 0,
+  });
   const [id] = useState(Math.random());
+
   const parentStyleTags = inheritParentStyle ? getStylesheetElements() : "";
   const styleTag = customStyle ? wrapInStyle(customStyle) : "";
   const heightListener = heightCorrection
@@ -40,10 +49,13 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   const linkClickListener = listenToLinkClicks
     ? wrapInScript(getListenToLinksScript(id))
     : "";
+  const unloadListener = listenToUnloadEvent
+    ? wrapInScript(getBeforeUnloadScript(id))
+    : "";
   const customScriptTag = customScript ? wrapInScript(customScript) : "";
 
-  useEffect(() => {
-    const onMessageCallback = (event: MessageEvent) => {
+  const onMessageCallback = useCallback(
+    (event: MessageEvent) => {
       let messageId = "";
       let providedId = "";
       let messageType = "";
@@ -84,14 +96,52 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
 
         return onLinkMessagePosted(payload);
       }
-    };
 
+      if (messageType === IFRAME_UNLOAD && listenToUnloadEvent) {
+        return setIframeUnloadPreventState({
+          times: iframeUnloadPreventState.times + 1,
+          preventing: iframeUnloadPreventState.times >= 5,
+        });
+      }
+    },
+    [iframeUnloadPreventState]
+  );
+
+  useEffect(() => {
     // Add listener on mount
     window.addEventListener("message", onMessageCallback);
 
     // Remove listener on unmount
     return () => window.removeEventListener("message", onMessageCallback);
-  }, []);
+  }, [onMessageCallback]);
+
+  if (iframeUnloadPreventState.preventing) {
+    return (
+      <div
+        style={{
+          height: 300,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          border: "5px solid #ccc",
+          justifyContent: "center",
+        }}
+      >
+        <p>This iframe is trying to navigate away.</p>
+        <button
+          type="button"
+          onClick={() =>
+            setIframeUnloadPreventState({
+              times: 4,
+              preventing: false,
+            })
+          }
+        >
+          Reload
+        </button>
+      </div>
+    );
+  }
 
   return (
     <iframe
@@ -99,10 +149,12 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       sandbox="allow-scripts"
       src="data:text/html"
       title={title}
-      srcDoc={`${parentStyleTags}${styleTag}${
+      srcDoc={`${unloadListener}${parentStyleTags}${styleTag}${
         sanitizedHtml || ""
-      }${heightListener}${linkClickListener}${customScriptTag}`}
-      height={height}
+      }${heightListener}${linkClickListener}${customScriptTag}<!--${
+        iframeUnloadPreventState.times
+      }-->`}
+      height={height || 100}
     />
   );
 };
@@ -120,6 +172,7 @@ SeamlessIframe.defaultProps = {
   `,
   customOuterStyleObject: {},
   listenToLinkClick: false,
+  listenToUnloadEvent: false,
   title: "",
 } as Partial<SeamlessIframeProps>;
 
