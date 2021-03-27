@@ -1,6 +1,6 @@
 {
   "name": "seamless-iframe",
-  "version": "0.1.1-rc1",
+  "version": "0.1.1",
   "description": "Seamless Iframe is a customisable React component that allows you to render HTML content in an iframe and makes it look as if it was part of the page itself. Seamless! 👻",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
