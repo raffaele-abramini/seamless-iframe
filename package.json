@@ -66,7 +66,8 @@
       "^.+\\.(ts|tsx)?$": "ts-jest",
       "^.+\\.(js|jsx)$": "babel-jest"
     },
-    "clearMocks": true
+    "clearMocks": true,
+    "coverageDirectory": "<rootDir>/../coverage"
   },
   "resolutions": {
     "node-forge": "0.10.0",

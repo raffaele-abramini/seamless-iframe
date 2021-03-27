@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getStylesheetElements } from "./getStylesheetElements";
 import { renderResizeScript } from "./getResizeScript";
 import {
   HEIGHT_MESSAGE,
+  NAVIGATION_INTERCEPTED_MESSAGE,
   LINK_CLICK_MESSAGE,
   POST_MESSAGE_IDENTIFIER,
 } from "./constants";
 import { getListenToLinksScript } from "./getListenToLinksScript";
 import type { SeamlessIframeProps } from "./definitions";
+import { getInterceptNavigationScript } from "./getInterceptNavigationScript";
 
 const onLinkMessagePosted = (url: string) => {
   if (window.confirm(`Are you sure you want to open "${url}"?`)) {
@@ -25,25 +27,36 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     customOuterStyleObject,
     sanitizedHtml,
     customScript,
-    listenToLinkClicks,
+    interceptLinkClicks,
+    preventIframeNavigation,
     customLinkClickCallback,
+    customIframeNavigationInterceptedView,
     title,
     heightCorrection,
   } = props;
+
   const [height, setHeight] = useState(0);
+  const [iframeUnloadPreventState, setIframeUnloadPreventState] = useState({
+    preventing: false,
+    times: 0,
+  });
   const [id] = useState(Math.random());
+
   const parentStyleTags = inheritParentStyle ? getStylesheetElements() : "";
   const styleTag = customStyle ? wrapInStyle(customStyle) : "";
   const heightListener = heightCorrection
     ? wrapInScript(renderResizeScript(id, props))
     : "";
-  const linkClickListener = listenToLinkClicks
+  const linkClickListener = interceptLinkClicks
     ? wrapInScript(getListenToLinksScript(id))
+    : "";
+  const unloadListener = preventIframeNavigation
+    ? wrapInScript(getInterceptNavigationScript(id))
     : "";
   const customScriptTag = customScript ? wrapInScript(customScript) : "";
 
-  useEffect(() => {
-    const onMessageCallback = (event: MessageEvent) => {
+  const onMessageCallback = useCallback(
+    (event: MessageEvent) => {
       let messageId = "";
       let providedId = "";
       let messageType = "";
@@ -76,7 +89,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
         return setHeight(Number(payload));
       }
 
-      if (messageType === LINK_CLICK_MESSAGE && listenToLinkClicks) {
+      if (messageType === LINK_CLICK_MESSAGE && interceptLinkClicks) {
         if (customLinkClickCallback) {
           // payload as url string
           return customLinkClickCallback(payload);
@@ -84,14 +97,58 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
 
         return onLinkMessagePosted(payload);
       }
-    };
 
+      if (
+        messageType === NAVIGATION_INTERCEPTED_MESSAGE &&
+        preventIframeNavigation
+      ) {
+        return setIframeUnloadPreventState({
+          times: iframeUnloadPreventState.times + 1,
+          preventing: iframeUnloadPreventState.times >= 2,
+        });
+      }
+    },
+    [iframeUnloadPreventState]
+  );
+
+  useEffect(() => {
     // Add listener on mount
     window.addEventListener("message", onMessageCallback);
 
     // Remove listener on unmount
     return () => window.removeEventListener("message", onMessageCallback);
-  }, []);
+  }, [onMessageCallback]);
+
+  if (iframeUnloadPreventState.preventing) {
+    if (customIframeNavigationInterceptedView) {
+      return customIframeNavigationInterceptedView;
+    }
+    return (
+      <div
+        style={{
+          height: 300,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          border: "5px solid #ccc",
+          justifyContent: "center",
+        }}
+      >
+        <p>This iframe is trying to navigate away.</p>
+        <button
+          type="button"
+          onClick={() =>
+            setIframeUnloadPreventState({
+              times: 2,
+              preventing: false,
+            })
+          }
+        >
+          Reload
+        </button>
+      </div>
+    );
+  }
 
   return (
     <iframe
@@ -99,9 +156,11 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       sandbox="allow-scripts"
       src="data:text/html"
       title={title}
-      srcDoc={`${parentStyleTags}${styleTag}${
+      srcDoc={`${unloadListener}${parentStyleTags}${styleTag}${
         sanitizedHtml || ""
-      }${heightListener}${linkClickListener}${customScriptTag}`}
+      }${heightListener}${linkClickListener}${customScriptTag}<!--${
+        iframeUnloadPreventState.times
+      }-->`}
       height={height}
     />
   );
@@ -120,6 +179,7 @@ SeamlessIframe.defaultProps = {
   `,
   customOuterStyleObject: {},
   listenToLinkClick: false,
+  preventIframeNavigation: false,
   title: "",
 } as Partial<SeamlessIframeProps>;
 

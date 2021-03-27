@@ -38,6 +38,14 @@ const html = `<!DOCTYPE html>
 </html>
 `;
 
+const htmlWithRedirect = `
+    <div>redirecting</div>
+    <script>
+      window.onbeforeunload = undefined;
+      window.location.href = "http://raff.ae";
+    </script>
+`;
+
 const customCss = `
   body {
     margin: 0;
@@ -47,11 +55,14 @@ const customCss = `
 
 const isSectionVisible = (section: string) =>
   window.location.pathname.match(new RegExp(`section/${section}[?/]?$|^/$`));
+const getArg = (argName: string) =>
+  window.location.search.match(new RegExp(`${argName}`));
 
 const visibleSections = {
   default: isSectionVisible("default"),
   ignoreParentStyles: isSectionVisible("ignoreParentStyles"),
   customScript: isSectionVisible("customScript"),
+  preventsNavigation: isSectionVisible("preventsNavigation"),
 };
 
 const customScript = `
@@ -65,7 +76,7 @@ reactDom.render(
   <main>
     {visibleSections.default && (
       <section data-seamless-iframe-container="">
-        <SeamlessIframe sanitizedHtml={html} listenToLinkClicks />
+        <SeamlessIframe sanitizedHtml={html} interceptLinkClicks />
       </section>
     )}
     {visibleSections.ignoreParentStyles && (
@@ -80,6 +91,17 @@ reactDom.render(
     {visibleSections.customScript && (
       <section data-seamless-iframe-container="">
         <SeamlessIframe sanitizedHtml={html} customScript={customScript} />
+      </section>
+    )}
+    {visibleSections.preventsNavigation && (
+      <section data-seamless-iframe-container="">
+        <SeamlessIframe
+          sanitizedHtml={htmlWithRedirect}
+          preventIframeNavigation={!getArg("allow")}
+          customIframeNavigationInterceptedView={
+            getArg("custom") ? <div>custom view bro</div> : undefined
+          }
+        />
       </section>
     )}
   </main>,

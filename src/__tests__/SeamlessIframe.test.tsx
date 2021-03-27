@@ -1,10 +1,17 @@
 import React from "react";
-import { act, render, RenderResult } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  getByText,
+  render,
+  RenderResult,
+} from "@testing-library/react";
 import { SeamlessIframe } from "../SeamlessIframe";
 import { renderResizeScript } from "../getResizeScript";
 import {
   HEIGHT_MESSAGE,
   LINK_CLICK_MESSAGE,
+  NAVIGATION_INTERCEPTED_MESSAGE,
   POST_MESSAGE_IDENTIFIER,
 } from "../constants";
 import { getListenToLinksScript } from "../getListenToLinksScript";
@@ -300,33 +307,33 @@ describe("link click support", () => {
     jest.spyOn(window, "confirm").mockImplementation();
   });
 
-  it("renders an iframe with correct clickListenScript if listenToLinkClicks is set", async () => {
+  it("renders an iframe with correct clickListenScript if interceptLinkClicks is set", async () => {
     const container = render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
     const iframe = getIframe(container);
     expect(iframe.srcdoc).toContain(getListenToLinksScript(iframeID));
   });
 
-  it("renders an iframe without correct clickListenScript if listenToLinkClicks is not set", async () => {
+  it("renders an iframe without correct clickListenScript if interceptLinkClicks is not set", async () => {
     const container = render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks={false}
+        interceptLinkClicks={false}
       />
     );
     const iframe = getIframe(container);
     expect(iframe.srcdoc).not.toContain(getListenToLinksScript(iframeID));
   });
 
-  it("reacts to link-related posted messages if listenToLinkClicks is set", async () => {
+  it("reacts to link-related posted messages if interceptLinkClicks is set", async () => {
     jest.spyOn(window, "open").mockImplementation();
 
     render(
@@ -334,7 +341,7 @@ describe("link click support", () => {
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
     // Assert with user confirmation
@@ -371,12 +378,12 @@ describe("link click support", () => {
     expect(window.open).not.toHaveBeenCalled();
   });
 
-  it("doesn't react to link-related posted messages if listenToLinkClicks is set but messageId is incorrect", async () => {
+  it("doesn't react to link-related posted messages if interceptLinkClicks is set but messageId is incorrect", async () => {
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
 
@@ -395,12 +402,12 @@ describe("link click support", () => {
     );
   });
 
-  it("doesn't react to link-related posted messages if listenToLinkClicks is set but iframeId is incorrect", async () => {
+  it("doesn't react to link-related posted messages if interceptLinkClicks is set but iframeId is incorrect", async () => {
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
 
@@ -424,7 +431,7 @@ describe("link click support", () => {
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
 
@@ -443,14 +450,14 @@ describe("link click support", () => {
     );
   });
 
-  it("reacts to link-related posted messages with custom callback if that and listenToLinkClicks are set", async () => {
+  it("reacts to link-related posted messages with custom callback if that and interceptLinkClicks are set", async () => {
     const spy = jest.fn();
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks
+        interceptLinkClicks
         customLinkClickCallback={spy}
       />
     );
@@ -467,5 +474,106 @@ describe("link click support", () => {
 
     expect(window.confirm).not.toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith(url);
+  });
+});
+
+describe("it prevents iframe navigation", () => {
+  const dispatchNavigationMessages = (number: number) =>
+    [...Array(number)].forEach(() =>
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: JSON.stringify(
+              `${POST_MESSAGE_IDENTIFIER}///${iframeID}///${NAVIGATION_INTERCEPTED_MESSAGE}///askdjh`
+            ),
+          })
+        );
+      })
+    );
+
+  const renderContainer = (
+    customView: React.ReactElement | undefined = undefined
+  ) =>
+    render(
+      <SeamlessIframe
+        sanitizedHtml="yo"
+        inheritParentStyle={false}
+        heightCorrection={false}
+        preventIframeNavigation
+        customIframeNavigationInterceptedView={customView}
+      />
+    );
+
+  const expectIframe = (container: RenderResult, time: number) => {
+    const iframe = getIframe(container);
+
+    expect(iframe.srcdoc).toContain(`<!--${time}-->`);
+  };
+
+  const expectAlertView = (
+    container: RenderResult,
+    customText: string = ""
+  ) => {
+    const iframe = getIframe(container);
+
+    expect(iframe).toBeFalsy();
+    expect(container.container.innerHTML).toContain(
+      customText || "This iframe is trying to navigate away."
+    );
+  };
+
+  it("refreshes the iframe content without showing alert view on the first two attempts", () => {
+    const container = renderContainer();
+
+    dispatchNavigationMessages(1);
+
+    expectIframe(container, 1);
+
+    dispatchNavigationMessages(1);
+
+    expectIframe(container, 2);
+  });
+
+  it("shows the default alert view after the third attempt", () => {
+    const container = renderContainer();
+
+    dispatchNavigationMessages(3);
+
+    expectAlertView(container);
+
+    dispatchNavigationMessages(1);
+
+    expectAlertView(container);
+  });
+
+  it("on default alert view button click, shows the iframe again", () => {
+    const container = renderContainer();
+
+    dispatchNavigationMessages(3);
+    expectAlertView(container);
+
+    act(() => {
+      fireEvent(
+        getByText(container.container, "Reload"),
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+        })
+      );
+    });
+
+    expectIframe(container, 2);
+  });
+
+  it("shows the custom alert view after the third attempt", () => {
+    const container = renderContainer(<div>custom yo</div>);
+
+    dispatchNavigationMessages(1);
+
+    expectIframe(container, 1);
+
+    dispatchNavigationMessages(2);
+
+    expectAlertView(container, "custom yo");
   });
 });

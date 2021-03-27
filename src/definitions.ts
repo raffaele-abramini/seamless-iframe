@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import React, { CSSProperties } from "react";
 
 export interface SeamlessIframeProps {
   sanitizedHtml: string;
@@ -9,7 +9,9 @@ export interface SeamlessIframeProps {
   heightCorrectionOnResize?: boolean;
   debounceResizeTime?: number;
   inheritParentStyle?: boolean;
-  listenToLinkClicks?: boolean;
+  interceptLinkClicks?: boolean;
+  preventIframeNavigation?: boolean;
   customLinkClickCallback?: (url: string) => void;
+  customIframeNavigationInterceptedView?: React.ReactElement;
   title?: string;
 }
