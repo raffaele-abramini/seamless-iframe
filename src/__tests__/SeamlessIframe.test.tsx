@@ -1,10 +1,17 @@
 import React from "react";
-import { act, render, RenderResult } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  getByText,
+  render,
+  RenderResult,
+} from "@testing-library/react";
 import { SeamlessIframe } from "../SeamlessIframe";
 import { renderResizeScript } from "../getResizeScript";
 import {
   HEIGHT_MESSAGE,
   LINK_CLICK_MESSAGE,
+  NAVIGATION_INTERCEPTED_MESSAGE,
   POST_MESSAGE_IDENTIFIER,
 } from "../constants";
 import { getListenToLinksScript } from "../getListenToLinksScript";
@@ -467,5 +474,106 @@ describe("link click support", () => {
 
     expect(window.confirm).not.toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith(url);
+  });
+});
+
+describe("it prevents iframe navigation", () => {
+  const dispatchNavigationMessages = (number: number) =>
+    [...Array(number)].forEach(() =>
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent("message", {
+            data: JSON.stringify(
+              `${POST_MESSAGE_IDENTIFIER}///${iframeID}///${NAVIGATION_INTERCEPTED_MESSAGE}///askdjh`
+            ),
+          })
+        );
+      })
+    );
+
+  const renderContainer = (
+    customView: React.ReactElement | undefined = undefined
+  ) =>
+    render(
+      <SeamlessIframe
+        sanitizedHtml="yo"
+        inheritParentStyle={false}
+        heightCorrection={false}
+        preventIframeNavigation
+        customIframeNavigationInterceptedView={customView}
+      />
+    );
+
+  const expectIframe = (container: RenderResult, time: number) => {
+    const iframe = getIframe(container);
+
+    expect(iframe.srcdoc).toContain(`<!--${time}-->`);
+  };
+
+  const expectAlertView = (
+    container: RenderResult,
+    customText: string = ""
+  ) => {
+    const iframe = getIframe(container);
+
+    expect(iframe).toBeFalsy();
+    expect(container.container.innerHTML).toContain(
+      customText || "This iframe is trying to navigate away."
+    );
+  };
+
+  it("refreshes the iframe content without showing alert view on the first two attempts", () => {
+    const container = renderContainer();
+
+    dispatchNavigationMessages(1);
+
+    expectIframe(container, 1);
+
+    dispatchNavigationMessages(1);
+
+    expectIframe(container, 2);
+  });
+
+  it("shows the default alert view after the third attempt", () => {
+    const container = renderContainer();
+
+    dispatchNavigationMessages(3);
+
+    expectAlertView(container);
+
+    dispatchNavigationMessages(1);
+
+    expectAlertView(container);
+  });
+
+  it("on default alert view button click, shows the iframe again", () => {
+    const container = renderContainer();
+
+    dispatchNavigationMessages(3);
+    expectAlertView(container);
+
+    act(() => {
+      fireEvent(
+        getByText(container.container, "Reload"),
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+        })
+      );
+    });
+
+    expectIframe(container, 2);
+  });
+
+  it("shows the custom alert view after the third attempt", () => {
+    const container = renderContainer(<div>custom yo</div>);
+
+    dispatchNavigationMessages(1);
+
+    expectIframe(container, 1);
+
+    dispatchNavigationMessages(2);
+
+    expectAlertView(container, "custom yo");
   });
 });

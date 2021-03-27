@@ -1,4 +1,4 @@
 export const POST_MESSAGE_IDENTIFIER = "SeamlessIframe";
-export const HEIGHT_MESSAGE = "setHeight";
-export const LINK_CLICK_MESSAGE = "linkClicked";
-export const IFRAME_UNLOAD = "iframeUnload";
+export const HEIGHT_MESSAGE = "HEIGHT_MESSAGE";
+export const LINK_CLICK_MESSAGE = "LINK_CLICK_MESSAGE";
+export const NAVIGATION_INTERCEPTED_MESSAGE = "NAVIGATION_INTERCEPTED_MESSAGE";

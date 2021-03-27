@@ -3,13 +3,13 @@ import { getStylesheetElements } from "./getStylesheetElements";
 import { renderResizeScript } from "./getResizeScript";
 import {
   HEIGHT_MESSAGE,
-  IFRAME_UNLOAD,
+  NAVIGATION_INTERCEPTED_MESSAGE,
   LINK_CLICK_MESSAGE,
   POST_MESSAGE_IDENTIFIER,
 } from "./constants";
 import { getListenToLinksScript } from "./getListenToLinksScript";
 import type { SeamlessIframeProps } from "./definitions";
-import { getBeforeUnloadScript } from "./getBeforeUnloadScript";
+import { getInterceptNavigationScript } from "./getInterceptNavigationScript";
 
 const onLinkMessagePosted = (url: string) => {
   if (window.confirm(`Are you sure you want to open "${url}"?`)) {
@@ -51,7 +51,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     ? wrapInScript(getListenToLinksScript(id))
     : "";
   const unloadListener = preventIframeNavigation
-    ? wrapInScript(getBeforeUnloadScript(id))
+    ? wrapInScript(getInterceptNavigationScript(id))
     : "";
   const customScriptTag = customScript ? wrapInScript(customScript) : "";
 
@@ -98,10 +98,13 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
         return onLinkMessagePosted(payload);
       }
 
-      if (messageType === IFRAME_UNLOAD && preventIframeNavigation) {
+      if (
+        messageType === NAVIGATION_INTERCEPTED_MESSAGE &&
+        preventIframeNavigation
+      ) {
         return setIframeUnloadPreventState({
           times: iframeUnloadPreventState.times + 1,
-          preventing: iframeUnloadPreventState.times >= 5,
+          preventing: iframeUnloadPreventState.times >= 2,
         });
       }
     },
@@ -136,7 +139,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
           type="button"
           onClick={() =>
             setIframeUnloadPreventState({
-              times: 4,
+              times: 2,
               preventing: false,
             })
           }
@@ -158,7 +161,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       }${heightListener}${linkClickListener}${customScriptTag}<!--${
         iframeUnloadPreventState.times
       }-->`}
-      height={height || 100}
+      height={height}
     />
   );
 };
