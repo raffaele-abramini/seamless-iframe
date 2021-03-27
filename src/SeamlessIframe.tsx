@@ -27,11 +27,12 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     customOuterStyleObject,
     sanitizedHtml,
     customScript,
-    listenToLinkClicks,
+    interceptLinkClicks,
+    preventIframeNavigation,
     customLinkClickCallback,
+    customIframeNavigationInterceptedView,
     title,
     heightCorrection,
-    listenToUnloadEvent,
   } = props;
 
   const [height, setHeight] = useState(0);
@@ -46,10 +47,10 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   const heightListener = heightCorrection
     ? wrapInScript(renderResizeScript(id, props))
     : "";
-  const linkClickListener = listenToLinkClicks
+  const linkClickListener = interceptLinkClicks
     ? wrapInScript(getListenToLinksScript(id))
     : "";
-  const unloadListener = listenToUnloadEvent
+  const unloadListener = preventIframeNavigation
     ? wrapInScript(getBeforeUnloadScript(id))
     : "";
   const customScriptTag = customScript ? wrapInScript(customScript) : "";
@@ -88,7 +89,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
         return setHeight(Number(payload));
       }
 
-      if (messageType === LINK_CLICK_MESSAGE && listenToLinkClicks) {
+      if (messageType === LINK_CLICK_MESSAGE && interceptLinkClicks) {
         if (customLinkClickCallback) {
           // payload as url string
           return customLinkClickCallback(payload);
@@ -97,7 +98,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
         return onLinkMessagePosted(payload);
       }
 
-      if (messageType === IFRAME_UNLOAD && listenToUnloadEvent) {
+      if (messageType === IFRAME_UNLOAD && preventIframeNavigation) {
         return setIframeUnloadPreventState({
           times: iframeUnloadPreventState.times + 1,
           preventing: iframeUnloadPreventState.times >= 5,
@@ -116,6 +117,9 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   }, [onMessageCallback]);
 
   if (iframeUnloadPreventState.preventing) {
+    if (customIframeNavigationInterceptedView) {
+      return customIframeNavigationInterceptedView;
+    }
     return (
       <div
         style={{
@@ -172,7 +176,7 @@ SeamlessIframe.defaultProps = {
   `,
   customOuterStyleObject: {},
   listenToLinkClick: false,
-  listenToUnloadEvent: false,
+  preventIframeNavigation: false,
   title: "",
 } as Partial<SeamlessIframeProps>;
 

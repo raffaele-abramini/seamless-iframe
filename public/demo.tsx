@@ -143,7 +143,7 @@ if (!isStolen) {
                 sanitizedHtml={externalHtml}
                 customStyle={customCss2}
                 inheritParentStyle={false}
-                listenToLinkClicks
+                interceptLinkClicks
               />
               <h4>Provided styles</h4>
               <pre>{customCss2}</pre>

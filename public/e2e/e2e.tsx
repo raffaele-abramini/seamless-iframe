@@ -65,7 +65,7 @@ reactDom.render(
   <main>
     {visibleSections.default && (
       <section data-seamless-iframe-container="">
-        <SeamlessIframe sanitizedHtml={html} listenToLinkClicks />
+        <SeamlessIframe sanitizedHtml={html} interceptLinkClicks />
       </section>
     )}
     {visibleSections.ignoreParentStyles && (

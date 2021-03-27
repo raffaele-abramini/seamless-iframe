@@ -50,8 +50,8 @@ export const MyPage = (props) => {
 | `heightCorrection` | Boolean | Whether to apply the iframe content scroll height to the iframe element or not | true |  
 | `heightCorrectionOnResize` | Boolean | Whether to re apply the height on resize. Off is `heightCorrection` is false | true | 
 | `debounceResizeTime` | Number | Debounce time for reapplying height on the window resize event. If set to 0, no debounce function will be applied | 250 |
-| `listenToLinkClicks` | Boolean | Whether to listen to link clicks. If enabled, the parent window will show a confirmation whenever a link in the iframe gets clicked | false |
-| `customLinkClickCallback` | Function | Function to manipulate the behaviour of the top window on link click. Useless if `listenToLinkClicks` is falsy. | - |
+| `interceptLinkClicks` | Boolean | Whether to listen to link clicks. If enabled, the parent window will show a confirmation whenever a link in the iframe gets clicked | false |
+| `customLinkClickCallback` | Function | Function to manipulate the behaviour of the top window on link click. Useless if `interceptLinkClicks` is falsy. | - |
 
 
 ## Abstract

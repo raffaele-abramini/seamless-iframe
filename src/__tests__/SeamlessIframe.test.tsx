@@ -300,33 +300,33 @@ describe("link click support", () => {
     jest.spyOn(window, "confirm").mockImplementation();
   });
 
-  it("renders an iframe with correct clickListenScript if listenToLinkClicks is set", async () => {
+  it("renders an iframe with correct clickListenScript if interceptLinkClicks is set", async () => {
     const container = render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
     const iframe = getIframe(container);
     expect(iframe.srcdoc).toContain(getListenToLinksScript(iframeID));
   });
 
-  it("renders an iframe without correct clickListenScript if listenToLinkClicks is not set", async () => {
+  it("renders an iframe without correct clickListenScript if interceptLinkClicks is not set", async () => {
     const container = render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks={false}
+        interceptLinkClicks={false}
       />
     );
     const iframe = getIframe(container);
     expect(iframe.srcdoc).not.toContain(getListenToLinksScript(iframeID));
   });
 
-  it("reacts to link-related posted messages if listenToLinkClicks is set", async () => {
+  it("reacts to link-related posted messages if interceptLinkClicks is set", async () => {
     jest.spyOn(window, "open").mockImplementation();
 
     render(
@@ -334,7 +334,7 @@ describe("link click support", () => {
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
     // Assert with user confirmation
@@ -371,12 +371,12 @@ describe("link click support", () => {
     expect(window.open).not.toHaveBeenCalled();
   });
 
-  it("doesn't react to link-related posted messages if listenToLinkClicks is set but messageId is incorrect", async () => {
+  it("doesn't react to link-related posted messages if interceptLinkClicks is set but messageId is incorrect", async () => {
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
 
@@ -395,12 +395,12 @@ describe("link click support", () => {
     );
   });
 
-  it("doesn't react to link-related posted messages if listenToLinkClicks is set but iframeId is incorrect", async () => {
+  it("doesn't react to link-related posted messages if interceptLinkClicks is set but iframeId is incorrect", async () => {
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
 
@@ -424,7 +424,7 @@ describe("link click support", () => {
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
-        listenToLinkClicks
+        interceptLinkClicks
       />
     );
 
@@ -443,14 +443,14 @@ describe("link click support", () => {
     );
   });
 
-  it("reacts to link-related posted messages with custom callback if that and listenToLinkClicks are set", async () => {
+  it("reacts to link-related posted messages with custom callback if that and interceptLinkClicks are set", async () => {
     const spy = jest.fn();
     render(
       <SeamlessIframe
         sanitizedHtml="yo"
         inheritParentStyle={false}
         heightCorrection={false}
-        listenToLinkClicks
+        interceptLinkClicks
         customLinkClickCallback={spy}
       />
     );
