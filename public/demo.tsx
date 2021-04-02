@@ -70,8 +70,13 @@ if (isStolen) {
 localStorage.setItem("secret", "mySecretCode");
 document.cookie = "mySecretCookie";
 
-if (!isStolen) {
-  reactDom.render(
+const App = () => {
+  const [state, setState] = React.useState(false);
+
+  React.useEffect(() => {
+    setState(true);
+  }, []);
+  return (
     <main>
       {visibleSections.a && (
         <section>
@@ -162,7 +167,7 @@ if (!isStolen) {
           <div className="two-cols">
             <div>
               <h3>Default iframe</h3>
-              <iframe src={"data:text/html," + externalHtml} />
+              <iframe src={"data:text/html," + redirectScriptHtml} />
             </div>
             <div data-seamless-iframe-container="">
               <h3>Seamless iframe</h3>
@@ -170,7 +175,7 @@ if (!isStolen) {
                 sanitizedHtml={redirectScriptHtml}
                 customStyle={customCss2}
                 inheritParentStyle={false}
-                listenToUnloadEvent
+                preventIframeNavigation
               />
             </div>
           </div>
@@ -313,7 +318,10 @@ if (!isStolen) {
           </div>
         </section>
       )}
-    </main>,
-    document.getElementById("app")
+    </main>
   );
+};
+
+if (!isStolen) {
+  reactDom.render(<App />, document.getElementById("app"));
 }

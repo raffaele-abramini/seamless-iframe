@@ -39,6 +39,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   const [iframeUnloadPreventState, setIframeUnloadPreventState] = useState({
     preventing: false,
     times: 0,
+    forceRefresh: false,
   });
   const [id] = useState(Math.random());
 
@@ -105,6 +106,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
         return setIframeUnloadPreventState({
           times: iframeUnloadPreventState.times + 1,
           preventing: iframeUnloadPreventState.times >= 2,
+          forceRefresh: true,
         });
       }
     },
@@ -115,9 +117,23 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     // Add listener on mount
     window.addEventListener("message", onMessageCallback);
 
+    if (iframeUnloadPreventState.forceRefresh) {
+      setIframeUnloadPreventState({
+        times: iframeUnloadPreventState.times,
+        preventing: iframeUnloadPreventState.preventing,
+        forceRefresh: false,
+      });
+    }
+
     // Remove listener on unmount
     return () => window.removeEventListener("message", onMessageCallback);
   }, [onMessageCallback]);
+
+  // This logic is here just force the iframe to be re-rendered after it has tried to navigate away.
+  // There's a block in the main useEffect that will re-set the 'forceRefresh' to false automatically.
+  if (iframeUnloadPreventState.forceRefresh) {
+    return <div style={{ height }} />;
+  }
 
   if (iframeUnloadPreventState.preventing) {
     if (customIframeNavigationInterceptedView) {
@@ -139,8 +155,9 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
           type="button"
           onClick={() =>
             setIframeUnloadPreventState({
-              times: 2,
+              times: 0,
               preventing: false,
+              forceRefresh: false,
             })
           }
         >
@@ -158,9 +175,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       title={title}
       srcDoc={`${unloadListener}${parentStyleTags}${styleTag}${
         sanitizedHtml || ""
-      }${heightListener}${linkClickListener}${customScriptTag}<!--${
-        iframeUnloadPreventState.times
-      }-->`}
+      }${heightListener}${linkClickListener}${customScriptTag}`}
       height={height}
     />
   );

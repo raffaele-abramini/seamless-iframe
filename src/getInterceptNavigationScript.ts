@@ -8,6 +8,7 @@ export const getInterceptNavigationScript = (id: number) => `
     const validatedMessage = () => JSON.stringify("${POST_MESSAGE_IDENTIFIER}///${id}///${NAVIGATION_INTERCEPTED_MESSAGE}///nope");
     window.addEventListener("beforeunload", (e) => {
       e.preventDefault();
+      console.warn("unloadingg")
       parent.postMessage(validatedMessage(), "${window.location.href}");
     });
 }
