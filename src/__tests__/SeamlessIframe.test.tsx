@@ -1,6 +1,8 @@
 import React from "react";
 import {
   act,
+  fireEvent,
+  getByText,
   render,
   RenderResult,
 } from "@testing-library/react";
@@ -514,6 +516,14 @@ describe("it prevents iframe navigation", () => {
     expect(container.container.innerHTML).toContain(customText || defaultText);
   };
 
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it("shows an empty div for the first 400 ms when unloading", () => {
     const container = renderContainer();
 
@@ -526,15 +536,7 @@ describe("it prevents iframe navigation", () => {
     expect(container.container.innerHTML).not.toContain(defaultText);
   });
 
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-
-  it("shows the actual alert view after the buffering", () => {
+  it("shows the actual warning alert view after the buffering", () => {
     const container = renderContainer();
 
     dispatchNavigationMessages(1);
@@ -545,6 +547,29 @@ describe("it prevents iframe navigation", () => {
 
     expect(container.container.querySelector("[data-buffering]")).toBeFalsy();
     expectAlertView(container);
+  });
+
+  it("on warning view 'reload' click, iframe gets shown again", () => {
+    const container = renderContainer();
+
+    dispatchNavigationMessages(1);
+
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    act(() => {
+      fireEvent(
+        getByText(container.container, "Reload"),
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+        })
+      );
+    });
+
+    const iframe = getIframe(container);
+
+    expect(iframe).toBeTruthy();
   });
 
   it("shows a custom alert view after the buffering", () => {
