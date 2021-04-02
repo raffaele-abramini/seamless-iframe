@@ -38,7 +38,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   const [height, setHeight] = useState(0);
   const [iframeUnloadPreventState, setIframeUnloadPreventState] = useState({
     preventing: false,
-    times: 0,
+    buffering: false,
   });
   const [id] = useState(Math.random());
 
@@ -103,8 +103,8 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
         preventIframeNavigation
       ) {
         return setIframeUnloadPreventState({
-          times: iframeUnloadPreventState.times + 1,
-          preventing: iframeUnloadPreventState.times >= 2,
+          preventing: false,
+          buffering: true,
         });
       }
     },
@@ -115,9 +115,26 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     // Add listener on mount
     window.addEventListener("message", onMessageCallback);
 
+    if (iframeUnloadPreventState.buffering) {
+      setTimeout(() => {
+        setIframeUnloadPreventState({
+          preventing: true,
+          buffering: false,
+        });
+      }, 300);
+    }
+
     // Remove listener on unmount
     return () => window.removeEventListener("message", onMessageCallback);
   }, [onMessageCallback]);
+
+  // This logic is here to prevent the iframe to show the "iframe is navigating away" view
+  // on page unload.
+  // There's a block in the main useEffect that will re-set the 'buffering'
+  // to false automatically after a number of milliseconds
+  if (iframeUnloadPreventState.buffering) {
+    return <div style={{ height }} data-buffering="" />;
+  }
 
   if (iframeUnloadPreventState.preventing) {
     if (customIframeNavigationInterceptedView) {
@@ -139,8 +156,8 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
           type="button"
           onClick={() =>
             setIframeUnloadPreventState({
-              times: 2,
               preventing: false,
+              buffering: false,
             })
           }
         >
@@ -158,9 +175,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
       title={title}
       srcDoc={`${unloadListener}${parentStyleTags}${styleTag}${
         sanitizedHtml || ""
-      }${heightListener}${linkClickListener}${customScriptTag}<!--${
-        iframeUnloadPreventState.times
-      }-->`}
+      }${heightListener}${linkClickListener}${customScriptTag}`}
       height={height}
     />
   );
