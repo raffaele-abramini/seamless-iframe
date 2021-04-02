@@ -133,7 +133,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   // There's a block in the main useEffect that will re-set the 'buffering'
   // to false automatically after a number of milliseconds
   if (iframeUnloadPreventState.buffering) {
-    return <div style={{ height }} />;
+    return <div style={{ height }} data-buffering="" />;
   }
 
   if (iframeUnloadPreventState.preventing) {

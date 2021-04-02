@@ -1,8 +1,6 @@
 import React from "react";
 import {
   act,
-  fireEvent,
-  getByText,
   render,
   RenderResult,
 } from "@testing-library/react";
@@ -504,11 +502,7 @@ describe("it prevents iframe navigation", () => {
       />
     );
 
-  const expectIframe = (container: RenderResult, time: number) => {
-    const iframe = getIframe(container);
-
-    expect(iframe.srcdoc).toContain(`<!--${time}-->`);
-  };
+  const defaultText = "This iframe is trying to navigate away.";
 
   const expectAlertView = (
     container: RenderResult,
@@ -517,63 +511,52 @@ describe("it prevents iframe navigation", () => {
     const iframe = getIframe(container);
 
     expect(iframe).toBeFalsy();
-    expect(container.container.innerHTML).toContain(
-      customText || "This iframe is trying to navigate away."
-    );
+    expect(container.container.innerHTML).toContain(customText || defaultText);
   };
 
-  it("refreshes the iframe content without showing alert view on the first two attempts", () => {
+  it("shows an empty div for the first 400 ms when unloading", () => {
     const container = renderContainer();
 
     dispatchNavigationMessages(1);
 
-    expectIframe(container, 1);
+    const iframe = getIframe(container);
 
-    dispatchNavigationMessages(1);
-
-    expectIframe(container, 2);
+    expect(iframe).toBeFalsy();
+    expect(container.container.querySelector("[data-buffering]")).toBeTruthy();
+    expect(container.container.innerHTML).not.toContain(defaultText);
   });
 
-  it("shows the default alert view after the third attempt", () => {
-    const container = renderContainer();
-
-    dispatchNavigationMessages(3);
-
-    expectAlertView(container);
-
-    dispatchNavigationMessages(1);
-
-    expectAlertView(container);
+  beforeAll(() => {
+    jest.useFakeTimers();
   });
 
-  it("on default alert view button click, shows the iframe again", () => {
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  it("shows the actual alert view after the buffering", () => {
     const container = renderContainer();
 
-    dispatchNavigationMessages(3);
-    expectAlertView(container);
+    dispatchNavigationMessages(1);
 
     act(() => {
-      fireEvent(
-        getByText(container.container, "Reload"),
-        new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-        })
-      );
+      jest.runOnlyPendingTimers();
     });
 
-    expectIframe(container, 2);
+    expect(container.container.querySelector("[data-buffering]")).toBeFalsy();
+    expectAlertView(container);
   });
 
-  it("shows the custom alert view after the third attempt", () => {
-    const container = renderContainer(<div>custom yo</div>);
+  it("shows a custom alert view after the buffering", () => {
+    const container = renderContainer(<div>yo bro</div>);
 
     dispatchNavigationMessages(1);
 
-    expectIframe(container, 1);
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
 
-    dispatchNavigationMessages(2);
-
-    expectAlertView(container, "custom yo");
+    expect(container.container.querySelector("[data-buffering]")).toBeFalsy();
+    expectAlertView(container, "yo bro");
   });
 });
