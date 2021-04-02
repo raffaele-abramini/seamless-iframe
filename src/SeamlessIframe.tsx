@@ -38,8 +38,7 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
   const [height, setHeight] = useState(0);
   const [iframeUnloadPreventState, setIframeUnloadPreventState] = useState({
     preventing: false,
-    times: 0,
-    forceRefresh: false,
+    buffering: false,
   });
   const [id] = useState(Math.random());
 
@@ -104,9 +103,8 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
         preventIframeNavigation
       ) {
         return setIframeUnloadPreventState({
-          times: iframeUnloadPreventState.times + 1,
-          preventing: iframeUnloadPreventState.times >= 2,
-          forceRefresh: true,
+          preventing: false,
+          buffering: true,
         });
       }
     },
@@ -117,21 +115,24 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
     // Add listener on mount
     window.addEventListener("message", onMessageCallback);
 
-    if (iframeUnloadPreventState.forceRefresh) {
-      setIframeUnloadPreventState({
-        times: iframeUnloadPreventState.times,
-        preventing: iframeUnloadPreventState.preventing,
-        forceRefresh: false,
-      });
+    if (iframeUnloadPreventState.buffering) {
+      setTimeout(() => {
+        setIframeUnloadPreventState({
+          preventing: true,
+          buffering: false,
+        });
+      }, 300);
     }
 
     // Remove listener on unmount
     return () => window.removeEventListener("message", onMessageCallback);
   }, [onMessageCallback]);
 
-  // This logic is here just force the iframe to be re-rendered after it has tried to navigate away.
-  // There's a block in the main useEffect that will re-set the 'forceRefresh' to false automatically.
-  if (iframeUnloadPreventState.forceRefresh) {
+  // This logic is here to prevent the iframe to show the "iframe is navigating away" view
+  // on page unload.
+  // There's a block in the main useEffect that will re-set the 'buffering'
+  // to false automatically after a number of milliseconds
+  if (iframeUnloadPreventState.buffering) {
     return <div style={{ height }} />;
   }
 
@@ -155,9 +156,8 @@ const SeamlessIframe = (props: SeamlessIframeProps) => {
           type="button"
           onClick={() =>
             setIframeUnloadPreventState({
-              times: 0,
               preventing: false,
-              forceRefresh: false,
+              buffering: false,
             })
           }
         >
