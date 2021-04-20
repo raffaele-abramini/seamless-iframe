@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import { CSSProperties, ReactElement } from "react";
 
 export interface SeamlessIframeProps {
   sanitizedHtml: string;
@@ -12,6 +12,6 @@ export interface SeamlessIframeProps {
   interceptLinkClicks?: boolean;
   preventIframeNavigation?: boolean;
   customLinkClickCallback?: (url: string) => void;
-  customIframeNavigationInterceptedView?: React.ReactElement;
+  customIframeNavigationInterceptedView?: ReactElement;
   title?: string;
 }
