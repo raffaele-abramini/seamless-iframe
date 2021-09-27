@@ -6,7 +6,7 @@ export const getListenToLinksScript = (id: number) => `
     const postMessage = (url) => parent.postMessage(validatedMessage(url), "${window.location.href}");
     const listenToLinks = Array.from(document.querySelectorAll("a")).forEach(a => {
         a.addEventListener("click", (e) => {
-          postMessage(e.target.href);
+          postMessage(a.getAttribute("href"));
           return e.preventDefault();
         });
       });
